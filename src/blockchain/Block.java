@@ -1,7 +1,9 @@
 package blockchain;
 
+import ui.App;
 import actor.Manager;
 import java.security.MessageDigest;
+
 
 public class Block {
     private String data;

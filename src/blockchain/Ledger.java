@@ -43,4 +43,8 @@ public class Ledger {
     public String getLastBlockHash() {
         return ledger.size() == 0 ? "" : ledger.getLast().getHash();
     }
+
+    public Block getLastBlock() {
+        return ledger.size() == 0 ? null : ledger.getLast();
+    }
 }

@@ -10,6 +10,10 @@ import org.json.simple.JSONObject;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONValue;
 
+import javafx.application.Platform;
+import javafx.scene.control.Label;
+import ui.App;
+
 public class Dashboard implements Runnable {
     private boolean exit;
 
@@ -50,11 +54,13 @@ public class Dashboard implements Runnable {
     public void handleTransactions() {
         if (!transactions.isEmpty()) {
             ledger.addBlockToLedger(new Block(transactionsToJson(), ledger.getLastBlockHash(), ledger.getSize()));
-            //updateStationsLedger();
+            updateUI();
         }
     }
 
-    public synchronized void updateStationsLedger() {
+    public synchronized void updateUI() {
+        Block b = ledger.getLastBlock();
+        Platform.runLater(() -> App.instance.hBoxBC.getChildren().addAll(new Label(b.toString())));
     }
 
     public void createTransaction(Event event) {

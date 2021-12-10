@@ -2,9 +2,9 @@ package actor;
 
 import java.util.Vector;
 
-public class Manager {
+public class Manager implements Runnable {
     public static long startTime;
-    public static void main(String[] args) {
+    public void run() {
         try {
             // Creation of stations
             Station s1 = new Station("Bajarah");
@@ -57,15 +57,16 @@ public class Manager {
             startTime = System.currentTimeMillis();
 
             // Launching threads
+            threadDashboard.start();
             for (Thread t : threadsStations)
                 t.start();
 
             for (Thread t : threadsBuses)
                 t.start();
 
-            threadDashboard.start();
-
-            Thread.sleep(30_000);
+            synchronized (this) {
+                this.wait();
+            }
 
             // Stopping threads 
             for (Station s : stations)

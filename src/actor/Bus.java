@@ -4,6 +4,8 @@ import java.util.Vector;
 import event.Event;
 import event.ArrivalEvent;
 import event.DepartEvent;
+import actor.Manager;
+import ui.App;
 
 public class Bus implements Runnable {
     private int number;
@@ -38,7 +40,7 @@ public class Bus implements Runnable {
                     Thread.sleep(3000); 
 
                     synchronized (stations.get(i)) {
-                        stations.get(i).enqueueEvent((Event)(new DepartEvent(this, stations.get(i), System.currentTimeMillis() - Manager.startTime)));       
+                        stations.get(i).enqueueEvent((Event)(new DepartEvent(this, stations.get(i), System.currentTimeMillis() - Manager.startTime)));
                         stations.get(i).notify();
                     }
 

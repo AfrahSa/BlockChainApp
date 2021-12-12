@@ -21,11 +21,11 @@ public class Manager implements Runnable {
             stations.add(s5);
 
             Vector<Integer> durations = new Vector<Integer>();
-            durations.add(15000);
-            durations.add(10000);
-            durations.add(20000);
-            durations.add(5000);
-            durations.add(25000);
+            durations.add(60000);
+            durations.add(40000);
+            durations.add(30000);
+            durations.add(4000);
+            durations.add(55000);
 
             // Creation of buses
             Bus b1 = new Bus(1, stations, 0, durations);

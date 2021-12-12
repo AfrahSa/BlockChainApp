@@ -38,7 +38,7 @@ public class Dashboard implements Runnable {
 
                     handleTransactions();
 
-                    System.out.println("[ Dashboard             ] :\n" + ledger);
+                    //System.out.println("[ Dashboard             ] :\n" + ledger);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -60,7 +60,13 @@ public class Dashboard implements Runnable {
 
     public synchronized void updateUI() {
         Block b = ledger.getLastBlock();
-        Platform.runLater(() -> App.instance.hBoxBC.getChildren().addAll(new Label(b.toString())));
+        //Platform.runLater(() -> App.instance.hBoxBC.getChildren().addAll(new Label(b.toString())));
+        Platform.runLater(() -> {
+            JSONArray a = (JSONArray) JSONValue.parse(b.getData());
+            for (int i = 0; i < a.size(); i++) {
+                App.instance.hBoxBC.getChildren().addAll(new Label(a.get(i).toString()));
+            }
+        });
     }
 
     public void createTransaction(Event event) {

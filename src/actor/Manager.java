@@ -97,6 +97,6 @@ public class Manager implements Runnable {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        System.out.println("[ Manager ] : exit");
+        System.out.println("[ Manager               ] : exit");
     }
 }

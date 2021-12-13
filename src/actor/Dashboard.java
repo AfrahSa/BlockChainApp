@@ -64,7 +64,30 @@ public class Dashboard implements Runnable {
         Platform.runLater(() -> {
             JSONArray a = (JSONArray) JSONValue.parse(b.getData());
             for (int i = 0; i < a.size(); i++) {
-                App.instance.hBoxBC.getChildren().addAll(new Label(a.get(i).toString()));
+                JSONObject o = (JSONObject)a.get(i);
+                App.instance.hBoxBC.getChildren().addAll(new Label(o.toString()));
+                long bus = (long)o.get("bus");
+                String type = (String)o.get("type");
+                String station = (String)o.get("station");
+                if (bus == 1) {
+                    if (type.equals("arrival")) {
+                        App.instance.labelBus1.setText("Bus 1 in station " + station);
+                    } else {
+                        App.instance.labelBus1.setText("Bus 1 departed from station " + station + "\nto station " + nextStation(station));
+                    }
+                } else if (bus == 2) {
+                    if (type.equals("arrival")) {
+                        App.instance.labelBus2.setText("Bus 2 in station " + station);
+                    } else {
+                        App.instance.labelBus2.setText("Bus 2 departed from station " + station + "\nto station " + nextStation(station));
+                    }
+                } else if (bus == 3) {
+                    if (type.equals("arrival")) {
+                        App.instance.labelBus3.setText("Bus 3 in station " + station);
+                    } else {
+                        App.instance.labelBus3.setText("Bus 3 departed from station " + station + "\nto station " + nextStation(station));
+                    }
+                }
             }
         });
     }
@@ -89,5 +112,13 @@ public class Dashboard implements Runnable {
             transactionsJson.add(transactions.get(i));
 
         return transactionsJson.toString();
+    }
+
+    public String nextStation(String s) {
+        for (int i = 0; i < stations.size(); i++) {
+            if (stations.get(i).getName().equals(s))
+                return stations.get((i + 1) % stations.size()).getName();
+        }
+        return "";
     }
 }

@@ -17,7 +17,7 @@ import ui.App;
 public class Dashboard implements Runnable {
     private boolean exit;
 
-    private Vector<Station> stations; 
+    private Vector<Station> stations;
     private Vector<Bus> buses;
     private Vector<JSONObject> transactions;
     private Ledger ledger;

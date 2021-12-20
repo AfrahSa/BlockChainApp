@@ -43,7 +43,8 @@ public class Block {
 
     @Override
     public String toString() {
-        return this.hash.substring(0, 4);
+         return this.hash.substring(0, 4);
+      //  return this.data;
     }
 
     public String getData() {

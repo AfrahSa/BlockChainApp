@@ -26,7 +26,11 @@ public class App extends Application {
     public Label labelBus1;
     public Label labelBus2;
     public Label labelBus3;
+    public Label labelPosBus1;
+    public Label labelPosBus2;
+    public Label labelPosBus3;
     public HBox hBoxBuses;
+    public HBox hBoxPosBuses;
 
     public static App instance;
 
@@ -51,7 +55,15 @@ public class App extends Application {
         hBoxBuses.setAlignment(Pos.CENTER);
         hBoxBuses.setSpacing(100);
 
-        VBox vBoxGlobal = new VBox(scrollPane, hBoxBuses);
+        labelPosBus1 = new Label("PosBus1");
+        labelPosBus2 = new Label("PosBus2");
+        labelPosBus3 = new Label("PosBus3");
+
+        hBoxPosBuses = new HBox(labelPosBus1, labelPosBus2, labelPosBus3);
+        hBoxPosBuses.setAlignment(Pos.CENTER);
+        hBoxPosBuses.setSpacing(100);
+
+        VBox vBoxGlobal = new VBox(scrollPane, hBoxBuses, hBoxPosBuses);
         vBoxGlobal.setAlignment(Pos.CENTER);
         vBoxGlobal.setSpacing(100);
 

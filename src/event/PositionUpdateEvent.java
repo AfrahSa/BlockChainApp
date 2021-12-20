@@ -1,15 +1,15 @@
 package event;
 
 import actor.Bus;
-import actor.Station;
+import actor.Point;
 
-public class DepartEvent extends Event {
+public class PositionUpdateEvent extends Event {
     private Bus bus;
-    private Station station;
+    private Point position;
     private long timeStamp;
-    public DepartEvent(Bus bus, Station station, long timeStamp) {
+    public PositionUpdateEvent(Bus bus, Point position, long timeStamp) {
         this.bus = bus;
-        this.station = station;
+        this.position = position;
         this.timeStamp = timeStamp;
     }
 
@@ -17,8 +17,8 @@ public class DepartEvent extends Event {
         return this.bus;
     }
 
-    public Station getStation() {
-        return this.station;
+    public Point getPosition() {
+        return this.position;
     }
 
     public long getTimeStamp() {

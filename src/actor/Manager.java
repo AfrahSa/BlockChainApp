@@ -109,6 +109,9 @@ public class Manager implements Runnable {
             for (Station s : stations)
                 s.setDashboard(dashboard);
 
+            for (Bus b : buses)
+                b.setDashboard(dashboard);
+
             // Creation of threads
             Vector<Thread> threadsStations = new Vector<Thread>();
             for (Station s : stations)

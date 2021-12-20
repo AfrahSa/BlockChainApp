@@ -5,6 +5,7 @@ import blockchain.Ledger;
 import blockchain.Block;
 import event.Event;
 import event.ArrivalEvent;
+import event.PositionUpdateEvent;
 import event.DepartEvent;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONArray;
@@ -68,24 +69,38 @@ public class Dashboard implements Runnable {
                 App.instance.hBoxBC.getChildren().addAll(new Label(o.toString()));
                 long bus = (long)o.get("bus");
                 String type = (String)o.get("type");
-                String station = (String)o.get("station");
                 if (bus == 1) {
                     if (type.equals("arrival")) {
+                        String station = (String)o.get("station");
                         App.instance.labelBus1.setText("Bus 1 in station " + station);
-                    } else {
+                    } else if (type.equals("depart")) {
+                        String station = (String)o.get("station");
                         App.instance.labelBus1.setText("Bus 1 departed from station " + station + "\nto station " + nextStation(station));
+                    } else if (type.equals("position_update")) {
+                        String position = (String)o.get("position");
+                        App.instance.labelPosBus1.setText(position);
                     }
                 } else if (bus == 2) {
                     if (type.equals("arrival")) {
+                        String station = (String)o.get("station");
                         App.instance.labelBus2.setText("Bus 2 in station " + station);
-                    } else {
+                    } else if (type.equals("depart")) {
+                        String station = (String)o.get("station");
                         App.instance.labelBus2.setText("Bus 2 departed from station " + station + "\nto station " + nextStation(station));
+                    } else if (type.equals("position_update")) {
+                        String position = (String)o.get("position");
+                        App.instance.labelPosBus2.setText(position);
                     }
                 } else if (bus == 3) {
                     if (type.equals("arrival")) {
+                        String station = (String)o.get("station");
                         App.instance.labelBus3.setText("Bus 3 in station " + station);
-                    } else {
+                    } else if (type.equals("depart")) {
+                        String station = (String)o.get("station");
                         App.instance.labelBus3.setText("Bus 3 departed from station " + station + "\nto station " + nextStation(station));
+                    } else if (type.equals("position_update")) {
+                        String position = (String)o.get("position");
+                        App.instance.labelPosBus3.setText(position);
                     }
                 }
             }
@@ -95,14 +110,24 @@ public class Dashboard implements Runnable {
     public void createTransaction(Event event) {
         JSONObject transaction = new JSONObject();
         if (event instanceof ArrivalEvent) {
+            ArrivalEvent e = (ArrivalEvent)event;
             transaction.put("type", "arrival");
+            transaction.put("bus", e.getBus().getNumber());
+            transaction.put("station", e.getStation().getName());
+            transaction.put("time", e.getTimeStamp());
         } else if (event instanceof DepartEvent) {
+            DepartEvent e = (DepartEvent)event;
             transaction.put("type", "depart");
+            transaction.put("bus", e.getBus().getNumber());
+            transaction.put("station", e.getStation().getName());
+            transaction.put("time", e.getTimeStamp());
+        } else if (event instanceof PositionUpdateEvent) {
+            PositionUpdateEvent e = (PositionUpdateEvent)event;
+            transaction.put("type", "position_update");
+            transaction.put("bus", e.getBus().getNumber());
+            transaction.put("position", "(" + e.getPosition().getX() + "," + e.getPosition().getY() + ")");
+            transaction.put("time", e.getTimeStamp());
         }
-        transaction.put("bus", event.getBus().getNumber());
-        transaction.put("station", event.getStation().getName());
-        transaction.put("time", event.getTimeStamp());
-
         transactions.add(transaction);
     }
 

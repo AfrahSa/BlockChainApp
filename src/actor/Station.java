@@ -26,20 +26,22 @@ public class Station implements Runnable {
                     this.wait();
 
                     while (!events.isEmpty()) {
-                        Event e = events.poll();
-                        if (e instanceof ArrivalEvent) {
+                        Event event = events.poll();
+                        if (event instanceof ArrivalEvent) {
+                            ArrivalEvent e = (ArrivalEvent) event;
                             System.out.println(String.format("[ Station %-13s ] : Arrival of Bus %-3d at %d", name, e.getBus().getNumber(), e.getTimeStamp()));
                             synchronized (e.getBus()) {
                                 e.getBus().notify();
                             }
-                        } else if (e instanceof DepartEvent) {
+                        } else if (event instanceof DepartEvent) {
+                            DepartEvent e = (DepartEvent) event;
                             System.out.println(String.format("[ Station %-13s ] : Depart of  Bus %-3d at %d", name, e.getBus().getNumber(), e.getTimeStamp()));
                             synchronized (e.getBus()) {
                                 e.getBus().notify();
                             }
                         }
                         synchronized (dashboard) {
-                            dashboard.createTransaction(e);
+                            dashboard.createTransaction(event);
                             dashboard.notify();
                         }
                     }

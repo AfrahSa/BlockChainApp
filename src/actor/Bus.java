@@ -4,6 +4,7 @@ import java.util.Vector;
 import event.Event;
 import event.ArrivalEvent;
 import event.DepartEvent;
+import event.PositionUpdateEvent;
 import java.lang.Math;
 import actor.Manager;
 import ui.App;
@@ -16,6 +17,7 @@ public class Bus implements Runnable {
     private Vector<Station> stations;
     // Vector<Integer> durations;
     private int start;
+    private Dashboard dashboard;
 
 
     public Bus(int number, Vector<Station> stations, int start,Vector<Itinerary>I) {
@@ -50,8 +52,11 @@ public class Bus implements Runnable {
                     this.wait();
                     //System.out.println(String.format("[ Bus %-17d ] : transit...", number));
                     for(int j=0; j<itineraries.get(i).getPoints().size()-1;j++){
-                        Thread.sleep(3000*itineraries.get(i).getPoints().get(j+1).Distance(itineraries.get(i).getPoints().get(j)));
-                        System.out.println("Bus "+this.number+" in point("+itineraries.get(i).getPoints().get(j).getX()+", "+itineraries.get(i).getPoints().get(j).getY()+")");
+                        Thread.sleep(3000 * itineraries.get(i).getPoints().get(j+1).Distance(itineraries.get(i).getPoints().get(j)));
+                        synchronized (dashboard) {
+                            dashboard.createTransaction((Event)(new PositionUpdateEvent(this, itineraries.get(i).getPoints().get(j+1), System.currentTimeMillis() - Manager.startTime)));
+                            dashboard.notify();
+                        }
                     }
 
 
@@ -76,4 +81,8 @@ public class Bus implements Runnable {
         return this.number;
     }
     public void setItineraries(Vector<Itinerary> I){ this.itineraries=I;}
+
+    public void setDashboard(Dashboard dashboard) {
+        this.dashboard = dashboard;
+    }
 }

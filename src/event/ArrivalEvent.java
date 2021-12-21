@@ -24,4 +24,5 @@ public class ArrivalEvent extends Event {
     public long getTimeStamp() {
         return this.timeStamp;
     }
+
 }

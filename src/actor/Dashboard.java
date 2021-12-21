@@ -39,7 +39,7 @@ public class Dashboard implements Runnable {
 
                     handleTransactions();
 
-                    //System.out.println("[ Dashboard             ] :\n" + ledger);
+                    System.out.println("[ Dashboard             ] :\n" + ledger);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -73,9 +73,11 @@ public class Dashboard implements Runnable {
                     if (type.equals("arrival")) {
                         String station = (String)o.get("station");
                         App.instance.labelBus1.setText("Bus 1 in station " + station);
+
+
                     } else if (type.equals("depart")) {
                         String station = (String)o.get("station");
-                        App.instance.labelBus1.setText("Bus 1 departed from station " + station + "\nto station " + nextStation(station));
+                        App.instance.labelBus1.setText("Bus 1 departed from station " + station + "\nto station " + nextStation(station).getName());
                     } else if (type.equals("position_update")) {
                         String position = (String)o.get("position");
                         App.instance.labelPosBus1.setText(position);
@@ -86,7 +88,7 @@ public class Dashboard implements Runnable {
                         App.instance.labelBus2.setText("Bus 2 in station " + station);
                     } else if (type.equals("depart")) {
                         String station = (String)o.get("station");
-                        App.instance.labelBus2.setText("Bus 2 departed from station " + station + "\nto station " + nextStation(station));
+                        App.instance.labelBus2.setText("Bus 2 departed from station " + station + "\nto station " + nextStation(station).getName());
                     } else if (type.equals("position_update")) {
                         String position = (String)o.get("position");
                         App.instance.labelPosBus2.setText(position);
@@ -97,7 +99,7 @@ public class Dashboard implements Runnable {
                         App.instance.labelBus3.setText("Bus 3 in station " + station);
                     } else if (type.equals("depart")) {
                         String station = (String)o.get("station");
-                        App.instance.labelBus3.setText("Bus 3 departed from station " + station + "\nto station " + nextStation(station));
+                        App.instance.labelBus3.setText("Bus 3 departed from station " + station + "\nto station " + nextStation(station).getName());
                     } else if (type.equals("position_update")) {
                         String position = (String)o.get("position");
                         App.instance.labelPosBus3.setText(position);
@@ -115,12 +117,14 @@ public class Dashboard implements Runnable {
             transaction.put("bus", e.getBus().getNumber());
             transaction.put("station", e.getStation().getName());
             transaction.put("time", e.getTimeStamp());
+
         } else if (event instanceof DepartEvent) {
             DepartEvent e = (DepartEvent)event;
             transaction.put("type", "depart");
             transaction.put("bus", e.getBus().getNumber());
             transaction.put("station", e.getStation().getName());
             transaction.put("time", e.getTimeStamp());
+            transaction.put("expectedArrivalTime", e.getExpectedArrivalTime());
         } else if (event instanceof PositionUpdateEvent) {
             PositionUpdateEvent e = (PositionUpdateEvent)event;
             transaction.put("type", "position_update");
@@ -139,11 +143,39 @@ public class Dashboard implements Runnable {
         return transactionsJson.toString();
     }
 
-    public String nextStation(String s) {
+    public Station nextStation(String s) {
         for (int i = 0; i < stations.size(); i++) {
             if (stations.get(i).getName().equals(s))
-                return stations.get((i + 1) % stations.size()).getName();
+                return stations.get((i + 1) % stations.size());
         }
-        return "";
+        return stations.get(1);
+    }
+    public int IsLate(int ibus,int arrivalTime,String station){
+        int n=ledger.getSize();
+        Block b;
+        String previousStation="";
+        for(Station s: stations){
+            if(nextStation(s.getName()).getName()==station){
+                previousStation=s.getName();
+                break;
+            }
+        }
+        while (n>=0){
+            b=ledger.getLedger().get(n);
+            JSONArray a = (JSONArray) JSONValue.parse(b.getData());
+            for (int i = 0; i < a.size(); i++) {
+                JSONObject o = (JSONObject)a.get(i);
+                int bus = (int)o.get("bus");
+                String type = (String)o.get("type");
+                String st=(String)o.get("station");
+                if (bus == ibus && type.equals("depart") && st.equals(previousStation)) {
+                    int expectedTime=(int)o.get("expectedArrivalTime");
+                    if(expectedTime==arrivalTime)
+                        return 0;
+                }
+            }
+            n--;
+        }
+        return 0;
     }
 }

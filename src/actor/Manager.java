@@ -95,16 +95,21 @@ public class Manager implements Runnable {
             itineraries.add(i4);
 
             // Creation of buses
-            Bus b1 = new Bus(1, stations, 0,itineraries);
-            Bus b2 = new Bus(2, stations, 2,itineraries);
-            Bus b3 = new Bus(3, stations, 3,itineraries);
+            Bus b1 = new Bus(1, stations, 0, itineraries);
+            Bus b2 = new Bus(2, stations, 2, itineraries);
+            Bus b3 = new Bus(3, stations, 3, itineraries);
 
             Vector<Bus> buses = new Vector<Bus>();
             buses.add(b1);
             buses.add(b2);
             buses.add(b3);
 
-            Dashboard dashboard = new Dashboard(stations, buses);
+            Vector<Long> durations = new Vector<Long>();
+
+            for (Itinerary i : itineraries)
+                durations.add(calculateDuration(i));
+
+            Dashboard dashboard = new Dashboard(stations, buses, durations);
 
             for (Station s : stations)
                 s.setDashboard(dashboard);
@@ -167,5 +172,13 @@ public class Manager implements Runnable {
             e.printStackTrace();
         }
         System.out.println("[ Manager               ] : exit");
+    }
+
+    private long calculateDuration(Itinerary itinerary) {
+        long duration = 0;
+        for (int i = 0; i < itinerary.getPoints().size() - 1; ++i) {
+            duration += 3000 * itinerary.getPoints().get(i+1).Distance(itinerary.getPoints().get(i));
+        }
+        return duration;
     }
 }

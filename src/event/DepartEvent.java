@@ -12,7 +12,6 @@ public class DepartEvent extends Event {
         this.bus = bus;
         this.station = station;
         this.timeStamp = timeStamp;
-        this.expectedArrivalTime=bus.expectedArrivalTime(station);
     }
 
     public Bus getBus() {

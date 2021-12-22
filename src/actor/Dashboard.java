@@ -22,12 +22,24 @@ public class Dashboard implements Runnable {
     private Vector<Bus> buses;
     private Vector<JSONObject> transactions;
     private Ledger ledger;
+    private Vector<Long> durations;
+    private Vector<Integer> busLastStation;
+    private Vector<Integer> busLastDepart;
 
-    public Dashboard(Vector<Station> stations, Vector<Bus> buses) {
+    public Dashboard(Vector<Station> stations, Vector<Bus> buses, Vector<Long> durations) {
         this.stations = stations;
         this.buses = buses;
         this.transactions = new Vector<JSONObject>();
         this.ledger = new Ledger();
+        this.durations = durations;
+        this.busLastStation = new Vector<Integer>();
+        this.busLastStation.add(-1);
+        this.busLastStation.add(-1);
+        this.busLastStation.add(-1);
+        this.busLastDepart = new Vector<Integer>();
+        this.busLastDepart.add(-1);
+        this.busLastDepart.add(-1);
+        this.busLastDepart.add(-1);
     }
 
     @Override
@@ -39,7 +51,7 @@ public class Dashboard implements Runnable {
 
                     handleTransactions();
 
-                    System.out.println("[ Dashboard             ] :\n" + ledger);
+                    //System.out.println("[ Dashboard             ] :\n" + ledger);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -55,6 +67,7 @@ public class Dashboard implements Runnable {
     public void handleTransactions() {
         if (!transactions.isEmpty()) {
             ledger.addBlockToLedger(new Block(transactionsToJson(), ledger.getLastBlockHash(), ledger.getSize()));
+            transactions.clear();
             updateUI();
         }
     }
@@ -69,15 +82,28 @@ public class Dashboard implements Runnable {
                 App.instance.hBoxBC.getChildren().addAll(new Label(o.toString()));
                 long bus = (long)o.get("bus");
                 String type = (String)o.get("type");
+                long time = (long)o.get("time");
                 if (bus == 1) {
                     if (type.equals("arrival")) {
                         String station = (String)o.get("station");
-                        App.instance.labelBus1.setText("Bus 1 in station " + station);
-
-
+                        App.instance.labelBus1.setText("Bus 1 in station " + station + "(" + getStationIndex(station) + ")"
+                                + "\nat " + time);
+                        System.out.println("[ Dashboard             ] : Bus 1 last " + busLastStation.get(0));
+                        if (busLastStation.get(0) != -1) {
+                            long delay = calculateDelay((long)busLastDepart.get(0), time, busLastStation.get(0));
+                            System.out.println("[ Dashboard             ] : Bus 1 delay " + delay);
+                            if (delay > 0)
+                                App.instance.labelDelayBus1.setText("Delay of " + delay);
+                            else
+                                App.instance.labelDelayBus1.setText("");
+                        }
+                        busLastStation.set(0, getStationIndex(station));
                     } else if (type.equals("depart")) {
                         String station = (String)o.get("station");
-                        App.instance.labelBus1.setText("Bus 1 departed from station " + station + "\nto station " + nextStation(station).getName());
+                        App.instance.labelBus1.setText("Bus 1 departed from station " + station + "(" + getStationIndex(station) + ")"
+                                + "\nto station " + nextStation(station).getName()
+                                + "\nat " + time);
+                        busLastDepart.set(0, (int)time);
                     } else if (type.equals("position_update")) {
                         String position = (String)o.get("position");
                         App.instance.labelPosBus1.setText(position);
@@ -85,10 +111,24 @@ public class Dashboard implements Runnable {
                 } else if (bus == 2) {
                     if (type.equals("arrival")) {
                         String station = (String)o.get("station");
-                        App.instance.labelBus2.setText("Bus 2 in station " + station);
+                        App.instance.labelBus2.setText("Bus 2 in station " + station + "(" + getStationIndex(station) + ")"
+                                + "\nat " + time);
+                        System.out.println("[ Dashboard             ] : Bus 2 last " + busLastStation.get(1));
+                        if (busLastStation.get(1) != -1) {
+                            long delay = calculateDelay((long)busLastDepart.get(1), time, busLastStation.get(1));
+                            System.out.println("[ Dashboard             ] : Bus 2 delay " + delay);
+                            if (delay > 0)
+                                App.instance.labelDelayBus2.setText("Delay of " + delay);
+                            else
+                                App.instance.labelDelayBus2.setText("");
+                        }
+                        busLastStation.set(1, getStationIndex(station));
                     } else if (type.equals("depart")) {
                         String station = (String)o.get("station");
-                        App.instance.labelBus2.setText("Bus 2 departed from station " + station + "\nto station " + nextStation(station).getName());
+                        App.instance.labelBus2.setText("Bus 2 departed from station " + station + "(" + getStationIndex(station) + ")"
+                                + "\nto station " + nextStation(station).getName()
+                                + "\nat " + time);
+                        busLastDepart.set(1, (int)time);
                     } else if (type.equals("position_update")) {
                         String position = (String)o.get("position");
                         App.instance.labelPosBus2.setText(position);
@@ -96,10 +136,24 @@ public class Dashboard implements Runnable {
                 } else if (bus == 3) {
                     if (type.equals("arrival")) {
                         String station = (String)o.get("station");
-                        App.instance.labelBus3.setText("Bus 3 in station " + station);
+                        App.instance.labelBus3.setText("Bus 3 in station " + station + "(" + getStationIndex(station) + ")"
+                                + "\nat " + time);
+                        System.out.println("[ Dashboard             ] : Bus 1 last " + busLastStation.get(2));
+                        if (busLastStation.get(2) != -1) {
+                            long delay = calculateDelay((long)busLastDepart.get(2), time, busLastStation.get(2));
+                            System.out.println("[ Dashboard             ] : Bus 3 delay " + delay);
+                            if (delay > 0)
+                                App.instance.labelDelayBus3.setText("Delay of " + delay);
+                            else
+                                App.instance.labelDelayBus3.setText("");
+                        }
+                        busLastStation.set(2, getStationIndex(station));
                     } else if (type.equals("depart")) {
                         String station = (String)o.get("station");
-                        App.instance.labelBus3.setText("Bus 3 departed from station " + station + "\nto station " + nextStation(station).getName());
+                        App.instance.labelBus3.setText("Bus 3 departed from station " + station + "(" + getStationIndex(station) + ")"
+                                + "\nto station " + nextStation(station).getName()
+                                + "\nat " + time);
+                        busLastDepart.set(2, (int)time);
                     } else if (type.equals("position_update")) {
                         String position = (String)o.get("position");
                         App.instance.labelPosBus3.setText(position);
@@ -117,7 +171,6 @@ public class Dashboard implements Runnable {
             transaction.put("bus", e.getBus().getNumber());
             transaction.put("station", e.getStation().getName());
             transaction.put("time", e.getTimeStamp());
-
         } else if (event instanceof DepartEvent) {
             DepartEvent e = (DepartEvent)event;
             transaction.put("type", "depart");
@@ -150,32 +203,17 @@ public class Dashboard implements Runnable {
         }
         return stations.get(1);
     }
-    public int IsLate(int ibus,int arrivalTime,String station){
-        int n=ledger.getSize();
-        Block b;
-        String previousStation="";
-        for(Station s: stations){
-            if(nextStation(s.getName()).getName()==station){
-                previousStation=s.getName();
-                break;
-            }
+
+    private int getStationIndex(String station) {
+        for (int i = 0; i < stations.size(); ++i) {
+            if (stations.get(i).getName().equals(station))
+                return i;
         }
-        while (n>=0){
-            b=ledger.getLedger().get(n);
-            JSONArray a = (JSONArray) JSONValue.parse(b.getData());
-            for (int i = 0; i < a.size(); i++) {
-                JSONObject o = (JSONObject)a.get(i);
-                int bus = (int)o.get("bus");
-                String type = (String)o.get("type");
-                String st=(String)o.get("station");
-                if (bus == ibus && type.equals("depart") && st.equals(previousStation)) {
-                    int expectedTime=(int)o.get("expectedArrivalTime");
-                    if(expectedTime==arrivalTime)
-                        return 0;
-                }
-            }
-            n--;
-        }
-        return 0;
+        return -1;
+    }
+
+    private long calculateDelay(long lastDepart, long arrivalTime, int station){
+        long exprectedArrivalTime = lastDepart + durations.get(station);
+        return (arrivalTime / 1000) - (exprectedArrivalTime / 1000);
     }
 }

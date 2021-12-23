@@ -1,5 +1,8 @@
 package blockchain;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONValue;
+
 import java.util.LinkedList;
 
 public class Ledger {
@@ -46,5 +49,19 @@ public class Ledger {
 
     public Block getLastBlock() {
         return ledger.size() == 0 ? null : ledger.getLast();
+    }
+    public String toJson() {
+        StringBuffer str = new StringBuffer("[\n");
+        for (Block b : ledger) {
+            JSONArray a = (JSONArray) JSONValue.parse(b.getData());
+            str.append("{ \n\t \"Hash\": " + b.getHash() + " \n"
+                     + "\t \"Previous Hash\": " + b.getPreviousHash() + "\n"
+                     + "\t \"Time\": " + b.getTimeStamp() + "\n"
+                     + "\t \"Data\": " + b.getData() + "\n},\n");
+        }
+        str.deleteCharAt( str.length() - 1 );
+        str.deleteCharAt( str.length() - 1 );
+        str.append("\n]");
+        return str.toString();
     }
 }

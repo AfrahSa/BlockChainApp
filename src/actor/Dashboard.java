@@ -1,5 +1,10 @@
 package actor;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 import blockchain.Ledger;
 import blockchain.Block;
@@ -7,6 +12,11 @@ import event.Event;
 import event.ArrivalEvent;
 import event.PositionUpdateEvent;
 import event.DepartEvent;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.scene.paint.Color;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONValue;
@@ -25,6 +35,7 @@ public class Dashboard implements Runnable {
     private Vector<Long> durations;
     private Vector<Integer> busLastStation;
     private Vector<Integer> busLastDepart;
+    public ObservableList<List<StringProperty>> data = FXCollections.observableArrayList();
 
     public Dashboard(Vector<Station> stations, Vector<Bus> buses, Vector<Long> durations) {
         this.stations = stations;
@@ -50,6 +61,21 @@ public class Dashboard implements Runnable {
                     this.wait();
 
                     handleTransactions();
+                    String FilePath = "C:\\Users\\dell\\IdeaProjects\\BlockChainApp1\\Blockchain.txt";
+                    String jsonContent = ledger.toJson();
+                    File file = new File(FilePath);
+
+                    try {
+                        if (!file.exists())
+                            file.createNewFile();
+                        FileWriter writer = new FileWriter(file);
+                        writer.write(jsonContent);
+                        writer.flush();
+                        writer.close();
+                    } catch (IOException e) {
+                        System.out.println("Erreur: impossible de créer le fichier '"
+                                + FilePath + "'");
+                    }
 
                     //System.out.println("[ Dashboard             ] :\n" + ledger);
                 } catch (Exception e) {
@@ -74,12 +100,27 @@ public class Dashboard implements Runnable {
 
     public synchronized void updateUI() {
         Block b = ledger.getLastBlock();
+        //ObservableList<JSONObject> data = FXCollections.observableArrayList();
         //Platform.runLater(() -> App.instance.hBoxBC.getChildren().addAll(new Label(b.toString())));
         Platform.runLater(() -> {
             JSONArray a = (JSONArray) JSONValue.parse(b.getData());
             for (int i = 0; i < a.size(); i++) {
                 JSONObject o = (JSONObject)a.get(i);
-                App.instance.hBoxBC.getChildren().addAll(new Label(o.toString()));
+                List<StringProperty> list = new ArrayList<>();
+                list.add(0,new SimpleStringProperty(o.get("bus").toString()));
+                list.add(1,new SimpleStringProperty((String)o.get("station")));
+                list.add(2,new SimpleStringProperty(o.get("time").toString()));
+                list.add(3,new SimpleStringProperty((String)o.get("type")));
+                if(o.get("position") == null)
+                    list.add(4,new SimpleStringProperty(""));
+                else
+                    list.add(4,new SimpleStringProperty (o.get("position").toString()));
+                data.add(list);
+                App.instance.table.setItems(data);
+                Label l =new Label(o.toString());
+                l.setTextFill(Color.web("#fff"));
+                App.instance.vBoxBC.getChildren().addAll(l);
+
                 long bus = (long)o.get("bus");
                 String type = (String)o.get("type");
                 long time = (long)o.get("time");

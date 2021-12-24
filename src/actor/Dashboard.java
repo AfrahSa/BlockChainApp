@@ -118,6 +118,13 @@ public class Dashboard implements Runnable {
                     list.add(4,new SimpleStringProperty(""));
                 else
                     list.add(4,new SimpleStringProperty (o.get("position").toString()));
+                list.add(5,new SimpleStringProperty(b.getHash().substring(0, 4)));
+                if(b.getPreviousHash().equals("") || b.getPreviousHash()== null)
+                    list.add(6,new SimpleStringProperty(""));
+                else
+                    list.add(6,new SimpleStringProperty(b.getPreviousHash().substring(0, 4)));
+                Long lon= new Long(b.getIndex());
+                list.add(7,new SimpleStringProperty(lon.toString()));
                 data.add(list);
                 App.instance.table.setItems(data);
                 Label l =new Label(o.toString());
@@ -128,13 +135,15 @@ public class Dashboard implements Runnable {
                 String type = (String)o.get("type");
                 long time = (long)o.get("time");
                 if (bus == 1) {
-
+                    App.instance.sc.setAnimated(false);
+                    App.instance.series.getData().clear();
+                    App.instance.series3.getData().clear();
+                    App.instance.series2.getData().clear();
+                    App.instance.sc.setAnimated(true);
+                    App.instance.series2.getData().addAll(App.instance.d1,App.instance.d2,App.instance.d3,App.instance.d4,App.instance.d5,App.instance.d6,App.instance.d7,App.instance.d8,App.instance.d9,App.instance.d10,App.instance.d11);
+                    App.instance.series3.getData().addAll(App.instance.S1,App.instance.S2,App.instance.S3,App.instance.S4,App.instance.S5);
 
                     if (type.equals("arrival")) {
-                        App.instance.sc.setAnimated(false);
-                        App.instance.series.getData().clear();
-                        App.instance.series3.getData().clear();
-                        App.instance.sc.setAnimated(true);
                         String station = (String)o.get("station");
                         App.instance.labelBus1.setText("Bus 1 in station " + station + "(" + getStationIndex(station) + ")"
                                 + "\nat " + time);
@@ -148,72 +157,122 @@ public class Dashboard implements Runnable {
                                 App.instance.labelDelayBus1.setText("");
                         }
                         busLastStation.set(0, getStationIndex(station));
-                        if(station.equals("Bach Djerah")){
+                        if(station.equals("Bab Ezzouar")){
+                            App.instance.sc.setAnimated(false);
+                            App.instance.series3.getData().remove(App.instance.S1);
+                            App.instance.series.getData().clear();
+                            App.instance.sc.setAnimated(true);
                             App.instance.series.getData().add(App.instance.S1);
-                            App.instance.series3.getData().add(App.instance.S2);
-                            App.instance.series3.getData().add(App.instance.S3);
-                            App.instance.series3.getData().add(App.instance.S4);
-                            App.instance.series3.getData().add(App.instance.S5);
-                        }else if(station.equals("Bab Ezzouar")){
-                            App.instance.series.getData().add(App.instance.S2);
-                            App.instance.series3.getData().add(App.instance.S1);
-                            App.instance.series3.getData().add(App.instance.S3);
-                            App.instance.series3.getData().add(App.instance.S4);
-                            App.instance.series3.getData().add(App.instance.S5);
                         }else if(station.equals("Harrach")){
-                            App.instance.series.getData().add(App.instance.S3);
-                            App.instance.series3.getData().add(App.instance.S1);
-                            App.instance.series3.getData().add(App.instance.S2);
-                            App.instance.series3.getData().add(App.instance.S4);
-                            App.instance.series3.getData().add(App.instance.S5);
+                            App.instance.sc.setAnimated(false);
+                            App.instance.series.getData().clear();
+                            App.instance.series3.getData().remove(App.instance.S2);
+                            App.instance.sc.setAnimated(true);
+                            App.instance.series.getData().add(App.instance.S2);
                         }else if(station.equals("Dar El Beida")){
-                            App.instance.series.getData().add(App.instance.S4);
-                            App.instance.series3.getData().add(App.instance.S1);
-                            App.instance.series3.getData().add(App.instance.S2);
-                            App.instance.series3.getData().add(App.instance.S3);
-                            App.instance.series3.getData().add(App.instance.S5);
+                            App.instance.sc.setAnimated(false);
+                            App.instance.series.getData().clear();
+                            App.instance.series3.getData().remove(App.instance.S3);
+                            App.instance.sc.setAnimated(true);
+                            App.instance.series.getData().add(App.instance.S3);
                         }else if(station.equals("Hammedi")){
+                            App.instance.sc.setAnimated(false);
+                            App.instance.series.getData().clear();
+                            App.instance.series3.getData().remove(App.instance.S4);
+                            App.instance.sc.setAnimated(true);
+                            App.instance.series.getData().add(App.instance.S4);
+                        }else if(station.equals("Bach Djerah")){
+                            App.instance.sc.setAnimated(false);
+                            App.instance.series.getData().clear();
+                            App.instance.series3.getData().remove(App.instance.S5);
+                            App.instance.sc.setAnimated(true);
                             App.instance.series.getData().add(App.instance.S5);
-                            App.instance.series3.getData().add(App.instance.S1);
-                            App.instance.series3.getData().add(App.instance.S2);
-                            App.instance.series3.getData().add(App.instance.S3);
-                            App.instance.series3.getData().add(App.instance.S4);
                         }
                     } else if (type.equals("depart")) {
-                        App.instance.sc.setAnimated(false);
-                        App.instance.series.getData().clear();
-                        App.instance.series3.getData().clear();
-                        App.instance.sc.setAnimated(true);
-
-                        App.instance.series3.getData().add(App.instance.S1);
-                        App.instance.series3.getData().add(App.instance.S2);
-                        App.instance.series3.getData().add(App.instance.S3);
-                        App.instance.series3.getData().add(App.instance.S4);
-                        App.instance.series3.getData().add(App.instance.S5);
-
-
                         String station = (String)o.get("station");
                         App.instance.labelBus1.setText("Bus 1 departed from station " + station + "(" + getStationIndex(station) + ")"
                                 + "\nto station " + nextStation(station).getName()
                                 + "\nat " + time);
                         busLastDepart.set(0, (int)time);
                     } else if (type.equals("position_update")) {
-                        App.instance.sc.setAnimated(false);
-                        App.instance.series.getData().clear();
-                        App.instance.series3.getData().clear();
-                        App.instance.sc.setAnimated(true);
-
-                        App.instance.series3.getData().add(App.instance.S1);
-                        App.instance.series3.getData().add(App.instance.S2);
-                        App.instance.series3.getData().add(App.instance.S3);
-                        App.instance.series3.getData().add(App.instance.S4);
-                        App.instance.series3.getData().add(App.instance.S5);
-
-
-                        String position = (String)o.get("position");
+                       String position = (String)o.get("position");
                         App.instance.labelPosBus1.setText(position);
+                         if(position.equals("(4,8)")){
+                             App.instance.sc.setAnimated(false);
+                             App.instance.series2.getData().remove(App.instance.d9);
+                             App.instance.series.getData().clear();
+                             App.instance.sc.setAnimated(true);
+                             App.instance.series.getData().add(App.instance.d9);
+                        }else if(position.equals("(4,3)")){
+                             App.instance.sc.setAnimated(false);
+                             App.instance.series2.getData().remove(App.instance.d10);
+                             App.instance.series.getData().clear();
+                             App.instance.sc.setAnimated(true);
+                             App.instance.series.getData().add(App.instance.d10);
+                        }else if(position.equals("(2,3)")){
+                             App.instance.sc.setAnimated(false);
+                             App.instance.series2.getData().remove(App.instance.d11);
+                             App.instance.series.getData().clear();
+                             App.instance.sc.setAnimated(true);
+                             App.instance.series.getData().add(App.instance.d11);
+                        }else if(position.equals("(6,2)")){
+                             App.instance.sc.setAnimated(false);
+                             App.instance.series2.getData().remove(App.instance.d1);
+                             App.instance.series.getData().clear();
+                             App.instance.sc.setAnimated(true);
+                             App.instance.series.getData().add(App.instance.d1);
+                        }else if(position.equals("(6,4)")){
+                             App.instance.sc.setAnimated(false);
+                             App.instance.series2.getData().remove(App.instance.d2);
+                             App.instance.series.getData().clear();
+                             App.instance.sc.setAnimated(true);
+                             App.instance.series.getData().add(App.instance.d2);
+                        }else if(position.equals("(9,4)")){
+                             App.instance.sc.setAnimated(false);
+                             App.instance.series2.getData().remove(App.instance.d3);
+                             App.instance.series.getData().clear();
+                             App.instance.sc.setAnimated(true);
+                             App.instance.series.getData().add(App.instance.d3);
+                        }else if(position.equals("(9,5)")){
+                             App.instance.sc.setAnimated(false);
+                             App.instance.series2.getData().remove(App.instance.d4);
+                             App.instance.series.getData().clear();
+                             App.instance.sc.setAnimated(true);
+                             App.instance.series.getData().add(App.instance.d4);
+                        }else if(position.equals("(11,5)")){
+                             App.instance.sc.setAnimated(false);
+                             App.instance.series2.getData().remove(App.instance.d5);
+                             App.instance.series.getData().clear();
+                             App.instance.sc.setAnimated(true);
+                             App.instance.series.getData().add(App.instance.d5);
+                        }else if(position.equals("(11,9)")){
+                             App.instance.sc.setAnimated(false);
+                             App.instance.series2.getData().remove(App.instance.d6);
+                             App.instance.series.getData().clear();
+                             App.instance.sc.setAnimated(true);
+                             App.instance.series.getData().add(App.instance.d6);
+                        }else if(position.equals("(7,9)")){
+                             App.instance.sc.setAnimated(false);
+                             App.instance.series2.getData().remove(App.instance.d7);
+                             App.instance.series.getData().clear();
+                             App.instance.sc.setAnimated(true);
+                             App.instance.series.getData().add(App.instance.d7);
+                        }else if(position.equals("(7,8)")){
+                             App.instance.sc.setAnimated(false);
+                             App.instance.series2.getData().remove(App.instance.d8);
+                             App.instance.series.getData().clear();
+                             App.instance.sc.setAnimated(true);
+                             App.instance.series.getData().add(App.instance.d8);
+                        }
                     }
                 } else if (bus == 2) {
+                    App.instance.sc_2.setAnimated(false);
+                    App.instance.series_2.getData().clear();
+                    App.instance.series3_2.getData().clear();
+                    App.instance.series2_2.getData().clear();
+                    App.instance.sc_2.setAnimated(true);
+                    App.instance.series2_2.getData().addAll(App.instance.d1_2,App.instance.d2_2,App.instance.d3_2,App.instance.d4_2,App.instance.d5_2,App.instance.d6_2,App.instance.d7_2,App.instance.d8_2,App.instance.d9_2,App.instance.d10_2,App.instance.d11_2);
+                    App.instance.series3_2.getData().addAll(App.instance.S1_2,App.instance.S2_2,App.instance.S3_2,App.instance.S4_2,App.instance.S5_2);
                     if (type.equals("arrival")) {
                         String station = (String)o.get("station");
                         App.instance.labelBus2.setText("Bus 2 in station " + station + "(" + getStationIndex(station) + ")"
@@ -228,6 +287,37 @@ public class Dashboard implements Runnable {
                                 App.instance.labelDelayBus2.setText("");
                         }
                         busLastStation.set(1, getStationIndex(station));
+                        if(station.equals("Bab Ezzouar")){
+                            App.instance.sc_2.setAnimated(false);
+                            App.instance.series3_2.getData().remove(App.instance.S1_2);
+                            App.instance.series_2.getData().clear();
+                            App.instance.sc_2.setAnimated(true);
+                            App.instance.series_2.getData().add(App.instance.S1_2);
+                        }else if(station.equals("Harrach")){
+                            App.instance.sc_2.setAnimated(false);
+                            App.instance.series_2.getData().clear();
+                            App.instance.series3_2.getData().remove(App.instance.S2_2);
+                            App.instance.sc_2.setAnimated(true);
+                            App.instance.series_2.getData().add(App.instance.S2_2);
+                        }else if(station.equals("Dar El Beida")){
+                            App.instance.sc_2.setAnimated(false);
+                            App.instance.series_2.getData().clear();
+                            App.instance.series3_2.getData().remove(App.instance.S3_2);
+                            App.instance.sc_2.setAnimated(true);
+                            App.instance.series_2.getData().add(App.instance.S3_2);
+                        }else if(station.equals("Hammedi")){
+                            App.instance.sc_2.setAnimated(false);
+                            App.instance.series_2.getData().clear();
+                            App.instance.series3_2.getData().remove(App.instance.S4_2);
+                            App.instance.sc_2.setAnimated(true);
+                            App.instance.series_2.getData().add(App.instance.S4_2);
+                        }else if(station.equals("Bach Djerah")){
+                            App.instance.sc_2.setAnimated(false);
+                            App.instance.series_2.getData().clear();
+                            App.instance.series3_2.getData().remove(App.instance.S5_2);
+                            App.instance.sc_2.setAnimated(true);
+                            App.instance.series_2.getData().add(App.instance.S5_2);
+                        }
                     } else if (type.equals("depart")) {
                         String station = (String)o.get("station");
                         App.instance.labelBus2.setText("Bus 2 departed from station " + station + "(" + getStationIndex(station) + ")"
@@ -237,8 +327,83 @@ public class Dashboard implements Runnable {
                     } else if (type.equals("position_update")) {
                         String position = (String)o.get("position");
                         App.instance.labelPosBus2.setText(position);
+
+                        if(position.equals("(4,8)")){
+                            App.instance.sc_2.setAnimated(false);
+                            App.instance.series2_2.getData().remove(App.instance.d9_2);
+                            App.instance.series_2.getData().clear();
+                            App.instance.sc_2.setAnimated(true);
+                            App.instance.series_2.getData().add(App.instance.d9_2);
+                        }else if(position.equals("(4,3)")){
+                            App.instance.sc_2.setAnimated(false);
+                            App.instance.series2_2.getData().remove(App.instance.d10_2);
+                            App.instance.series_2.getData().clear();
+                            App.instance.sc_2.setAnimated(true);
+                            App.instance.series_2.getData().add(App.instance.d10_2);
+                        }else if(position.equals("(2,3)")){
+                            App.instance.sc_2.setAnimated(false);
+                            App.instance.series2_2.getData().remove(App.instance.d11_2);
+                            App.instance.series_2.getData().clear();
+                            App.instance.sc_2.setAnimated(true);
+                            App.instance.series_2.getData().add(App.instance.d11_2);
+                        }else if(position.equals("(6,2)")){
+                            App.instance.sc_2.setAnimated(false);
+                            App.instance.series2_2.getData().remove(App.instance.d1_2);
+                            App.instance.series_2.getData().clear();
+                            App.instance.sc_2.setAnimated(true);
+                            App.instance.series_2.getData().add(App.instance.d1_2);
+                        }else if(position.equals("(6,4)")){
+                            App.instance.sc_2.setAnimated(false);
+                            App.instance.series2_2.getData().remove(App.instance.d2_2);
+                            App.instance.series_2.getData().clear();
+                            App.instance.sc_2.setAnimated(true);
+                            App.instance.series_2.getData().add(App.instance.d2_2);
+                        }else if(position.equals("(9,4)")){
+                            App.instance.sc_2.setAnimated(false);
+                            App.instance.series2_2.getData().remove(App.instance.d3_2);
+                            App.instance.series_2.getData().clear();
+                            App.instance.sc_2.setAnimated(true);
+                            App.instance.series_2.getData().add(App.instance.d3_2);
+                        }else if(position.equals("(9,5)")){
+                            App.instance.sc_2.setAnimated(false);
+                            App.instance.series2_2.getData().remove(App.instance.d4_2);
+                            App.instance.series_2.getData().clear();
+                            App.instance.sc_2.setAnimated(true);
+                            App.instance.series_2.getData().add(App.instance.d4_2);
+                        }else if(position.equals("(11,5)")){
+                            App.instance.sc_2.setAnimated(false);
+                            App.instance.series2_2.getData().remove(App.instance.d5_2);
+                            App.instance.series_2.getData().clear();
+                            App.instance.sc_2.setAnimated(true);
+                            App.instance.series_2.getData().add(App.instance.d5_2);
+                        }else if(position.equals("(11,9)")){
+                            App.instance.sc_2.setAnimated(false);
+                            App.instance.series2_2.getData().remove(App.instance.d6_2);
+                            App.instance.series_2.getData().clear();
+                            App.instance.sc_2.setAnimated(true);
+                            App.instance.series_2.getData().add(App.instance.d6_2);
+                        }else if(position.equals("(7,9)")){
+                            App.instance.sc_2.setAnimated(false);
+                            App.instance.series2_2.getData().remove(App.instance.d7_2);
+                            App.instance.series_2.getData().clear();
+                            App.instance.sc_2.setAnimated(true);
+                            App.instance.series_2.getData().add(App.instance.d7_2);
+                        }else if(position.equals("(7,8)")){
+                            App.instance.sc_2.setAnimated(false);
+                            App.instance.series2_2.getData().remove(App.instance.d8_2);
+                            App.instance.series_2.getData().clear();
+                            App.instance.sc_2.setAnimated(true);
+                            App.instance.series_2.getData().add(App.instance.d8_2);
+                        }
                     }
                 } else if (bus == 3) {
+                    App.instance.sc_3.setAnimated(false);
+                    App.instance.series_3.getData().clear();
+                    App.instance.series3_3.getData().clear();
+                    App.instance.series2_3.getData().clear();
+                    App.instance.sc_3.setAnimated(true);
+                    App.instance.series2_3.getData().addAll(App.instance.d1_3,App.instance.d2_3,App.instance.d3_3,App.instance.d4_3,App.instance.d5_3,App.instance.d6_3,App.instance.d7_3,App.instance.d8_3,App.instance.d9_3,App.instance.d10_3,App.instance.d11_3);
+                    App.instance.series3_3.getData().addAll(App.instance.S1_3,App.instance.S2_3,App.instance.S3_3,App.instance.S4_3,App.instance.S5_3);
                     if (type.equals("arrival")) {
                         String station = (String)o.get("station");
                         App.instance.labelBus3.setText("Bus 3 in station " + station + "(" + getStationIndex(station) + ")"
@@ -253,6 +418,38 @@ public class Dashboard implements Runnable {
                                 App.instance.labelDelayBus3.setText("");
                         }
                         busLastStation.set(2, getStationIndex(station));
+
+                        if(station.equals("Bab Ezzouar")){
+                            App.instance.sc_3.setAnimated(false);
+                            App.instance.series3_3.getData().remove(App.instance.S1_3);
+                            App.instance.series_3.getData().clear();
+                            App.instance.sc_3.setAnimated(true);
+                            App.instance.series_3.getData().add(App.instance.S1_3);
+                        }else if(station.equals("Harrach")){
+                            App.instance.sc_3.setAnimated(false);
+                            App.instance.series_3.getData().clear();
+                            App.instance.series3_3.getData().remove(App.instance.S2_3);
+                            App.instance.sc_3.setAnimated(true);
+                            App.instance.series_3.getData().add(App.instance.S2_3);
+                        }else if(station.equals("Dar El Beida")){
+                            App.instance.sc_3.setAnimated(false);
+                            App.instance.series_3.getData().clear();
+                            App.instance.series3_3.getData().remove(App.instance.S3_3);
+                            App.instance.sc_3.setAnimated(true);
+                            App.instance.series_3.getData().add(App.instance.S3_3);
+                        }else if(station.equals("Hammedi")){
+                            App.instance.sc_3.setAnimated(false);
+                            App.instance.series_3.getData().clear();
+                            App.instance.series3_3.getData().remove(App.instance.S4_3);
+                            App.instance.sc_3.setAnimated(true);
+                            App.instance.series_3.getData().add(App.instance.S4_3);
+                        }else if(station.equals("Bach Djerah")){
+                            App.instance.sc_3.setAnimated(false);
+                            App.instance.series_3.getData().clear();
+                            App.instance.series3_3.getData().remove(App.instance.S5_3);
+                            App.instance.sc_3.setAnimated(true);
+                            App.instance.series_3.getData().add(App.instance.S5_3);
+                        }
                     } else if (type.equals("depart")) {
                         String station = (String)o.get("station");
                         App.instance.labelBus3.setText("Bus 3 departed from station " + station + "(" + getStationIndex(station) + ")"
@@ -262,6 +459,73 @@ public class Dashboard implements Runnable {
                     } else if (type.equals("position_update")) {
                         String position = (String)o.get("position");
                         App.instance.labelPosBus3.setText(position);
+                        if(position.equals("(4,8)")){
+                            App.instance.sc_3.setAnimated(false);
+                            App.instance.series2_3.getData().remove(App.instance.d9_3);
+                            App.instance.series_3.getData().clear();
+                            App.instance.sc_3.setAnimated(true);
+                            App.instance.series_3.getData().add(App.instance.d9_3);
+                        }else if(position.equals("(4,3)")){
+                            App.instance.sc_3.setAnimated(false);
+                            App.instance.series2_3.getData().remove(App.instance.d10_3);
+                            App.instance.series_3.getData().clear();
+                            App.instance.sc_3.setAnimated(true);
+                            App.instance.series_3.getData().add(App.instance.d10_3);
+                        }else if(position.equals("(2,3)")){
+                            App.instance.sc_3.setAnimated(false);
+                            App.instance.series2_3.getData().remove(App.instance.d11_3);
+                            App.instance.series_3.getData().clear();
+                            App.instance.sc_3.setAnimated(true);
+                            App.instance.series_3.getData().add(App.instance.d11_3);
+                        }else if(position.equals("(6,2)")){
+                            App.instance.sc_3.setAnimated(false);
+                            App.instance.series2_3.getData().remove(App.instance.d1_3);
+                            App.instance.series_3.getData().clear();
+                            App.instance.sc_3.setAnimated(true);
+                            App.instance.series_3.getData().add(App.instance.d1_3);
+                        }else if(position.equals("(6,4)")){
+                            App.instance.sc_3.setAnimated(false);
+                            App.instance.series2_3.getData().remove(App.instance.d2_3);
+                            App.instance.series_3.getData().clear();
+                            App.instance.sc_3.setAnimated(true);
+                            App.instance.series_3.getData().add(App.instance.d2_3);
+                        }else if(position.equals("(9,4)")){
+                            App.instance.sc_3.setAnimated(false);
+                            App.instance.series2_3.getData().remove(App.instance.d3_3);
+                            App.instance.series_3.getData().clear();
+                            App.instance.sc_3.setAnimated(true);
+                            App.instance.series_3.getData().add(App.instance.d3_3);
+                        }else if(position.equals("(9,5)")){
+                            App.instance.sc_3.setAnimated(false);
+                            App.instance.series2_3.getData().remove(App.instance.d4_3);
+                            App.instance.series_3.getData().clear();
+                            App.instance.sc_3.setAnimated(true);
+                            App.instance.series_3.getData().add(App.instance.d4_3);
+                        }else if(position.equals("(11,5)")){
+                            App.instance.sc_3.setAnimated(false);
+                            App.instance.series2_3.getData().remove(App.instance.d5_3);
+                            App.instance.series_3.getData().clear();
+                            App.instance.sc_3.setAnimated(true);
+                            App.instance.series_3.getData().add(App.instance.d5_3);
+                        }else if(position.equals("(11,9)")){
+                            App.instance.sc_3.setAnimated(false);
+                            App.instance.series2_3.getData().remove(App.instance.d6_3);
+                            App.instance.series_3.getData().clear();
+                            App.instance.sc_3.setAnimated(true);
+                            App.instance.series_3.getData().add(App.instance.d6_3);
+                        }else if(position.equals("(7,9)")){
+                            App.instance.sc_3.setAnimated(false);
+                            App.instance.series2_3.getData().remove(App.instance.d7_3);
+                            App.instance.series_3.getData().clear();
+                            App.instance.sc_3.setAnimated(true);
+                            App.instance.series_3.getData().add(App.instance.d7_3);
+                        }else if(position.equals("(7,8)")){
+                            App.instance.sc_3.setAnimated(false);
+                            App.instance.series2_3.getData().remove(App.instance.d8_3);
+                            App.instance.series_3.getData().clear();
+                            App.instance.sc_3.setAnimated(true);
+                            App.instance.series_3.getData().add(App.instance.d8_3);
+                        }
                     }
                 }
 

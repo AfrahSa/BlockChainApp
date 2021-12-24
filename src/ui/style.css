@@ -55,3 +55,49 @@
 .table-view .virtual-flow .scroll-bar:horizontal .thumb {
     -fx-background-color:  linear-gradient(to right, #1dbbdd44, #93f9b944);
 }
+.chart{
+    -fx-alternative-row-visible: false;
+    -fx-alternative-column-visible: false;
+    -fx-horizontal-grid-lines-visible: false;
+    -fx-vertical-grid-lines-visible:false;
+    -fx-horizontal-zero-line-visible: false;
+    -fx-vertical-zero-line-visible: false;
+    -fx-background-color: rgba(255,255,255,0.2);
+    -fx-background-radius: 20;
+}
+.default-color2.chart-symbol{
+    -fx-stroke: #000000;
+    -fx-shape: "M441.884,109.647A32.029,32.029,0,0,0,415.669,96H48a32.036,32.036,0,0,0-32,32V376H57.082a67.982,67.982,0,0,0,133.836,0H313.082a67.982,67.982,0,0,0,133.836,0H496V194.521a23.886,23.886,0,0,0-4.338-13.763ZM180,128H324v96H180ZM48,128H148v96H48Zm76,272a36,36,0,1,1,36-36A36.04,36.04,0,0,1,124,400Zm256,0a36,36,0,1,1,36-36A36.04,36.04,0,0,1,380,400Zm84-56H444.994a68,68,0,0,0-129.988,0H188.994a68,68,0,0,0-129.988,0H48V256H464Zm0-120H356V128h59.669L464,197.043Z";
+    -fx-background-radius: 7px ;
+    -fx-background-color: #000000;
+    -fx-padding: 8px ;
+}
+.default-color1.chart-symbol{
+    -fx-background-radius: 7px ;
+    -fx-padding: 7px ;
+    -fx-background-color: #86340A;
+}
+.chart-symbol{
+    -fx-background-radius: 7px ;
+    -fx-padding: 2px ;
+    -fx-background-color: #EFE3D0;
+}
+.gradient-background{
+    -fx-background-color: linear-gradient(from 25% 25% to 100% 100%, #D91F4E, #F3ABB5);
+}
+.chart-plot-background{
+    -fx-background-color: transparent;
+
+}
+.axis-tick-mark,
+.axis-minor-tick-mark,
+.chart-vertical-grid-lines,
+.chart-horizontal-grid-lines,
+.chart-vertical-zero-line,
+.chart-horizontal-zero-line  {
+    -fx-stroke: transparent;
+}
+
+.chart-alternative-row-fill, .chart-alternative-column-fill{
+    /*-fx-fill: #f5f5f5;*/
+}

@@ -7,7 +7,7 @@ public class Manager implements Runnable {
     public void run() {
         try {
             // Creation of stations
-            Station s1 = new Station("Bajarah");
+            Station s1 = new Station("Bach Djerah");
             Station s2 = new Station("Bab Ezzouar");
             Station s3 = new Station("Harrach");
             Station s4 = new Station("Dar El Beida");
@@ -30,11 +30,11 @@ public class Manager implements Runnable {
 
             // Creation of itinerary
             Vector<Point> V5= new Vector<Point>();
-            Point p16 = new Point(3,6);
-            Point p17 = new Point(2,6);
-            Point p18 = new Point(2,1);
-            Point p19 = new Point(0,1);
-            Point p20 = new Point(0,0);
+            Point p16 = new Point(5,8);
+            Point p17 = new Point(4,8);
+            Point p18 = new Point(4,3);
+            Point p19 = new Point(2,3);
+            Point p20 = new Point(2,2);
             V5.add(p16);
             V5.add(p17);
             V5.add(p18);
@@ -43,20 +43,22 @@ public class Manager implements Runnable {
             Itinerary i5 = new Itinerary(V5);
 
             Vector<Point> V1= new Vector<Point>();
-            Point p1 = new Point(4,0);
-            Point p2 = new Point(4,2);
-            Point p3 = new Point(6,2);
+            Point p21 = new Point(2,2);
+            Point p1 = new Point(6,2);
+            Point p2 = new Point(6,4);
+            Point p3 = new Point(8,4);
+            V1.add(p21);
             V1.add(p1);
             V1.add(p2);
             V1.add(p3);
             Itinerary i1 = new Itinerary(V1);
 
             Vector<Point> V2= new Vector<Point>();
-            Point p4 = new Point(6,2);
-            Point p5 = new Point(7,2);
-            Point p6 = new Point(7,3);
-            Point p7 = new Point(9,3);
-            Point p8 = new Point(9,5);
+            Point p4 = new Point(8,4);
+            Point p5 = new Point(9,4);
+            Point p6 = new Point(9,5);
+            Point p7 = new Point(11,5);
+            Point p8 = new Point(11,7);
             V2.add(p4);
             V2.add(p5);
             V2.add(p6);
@@ -65,9 +67,9 @@ public class Manager implements Runnable {
             Itinerary i2 = new Itinerary(V2);
 
             Vector<Point> V3= new Vector<Point>();
-            Point p9 = new Point(9,5);
-            Point p10 = new Point(9,7);
-            Point p11 = new Point(7,7);
+            Point p9 = new Point(11,5);
+            Point p10 = new Point(11,9);
+            Point p11 = new Point(9,9);
 
             V3.add(p9);
             V3.add(p10);
@@ -75,10 +77,10 @@ public class Manager implements Runnable {
             Itinerary i3 = new Itinerary(V3);
 
             Vector<Point> V4= new Vector<Point>();
-            Point p12 = new Point(7,7);
-            Point p13 = new Point(5,7);
-            Point p14 = new Point(5,6);
-            Point p15 = new Point(3,6);
+            Point p12 = new Point(9,9);
+            Point p13 = new Point(7,9);
+            Point p14 = new Point(7,8);
+            Point p15 = new Point(5,8);
             V4.add(p12);
             V4.add(p13);
             V4.add(p14);

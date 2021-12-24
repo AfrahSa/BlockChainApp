@@ -16,6 +16,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.chart.XYChart;
 import javafx.scene.paint.Color;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONArray;
@@ -99,12 +100,14 @@ public class Dashboard implements Runnable {
     }
 
     public synchronized void updateUI() {
+
         Block b = ledger.getLastBlock();
         //ObservableList<JSONObject> data = FXCollections.observableArrayList();
         //Platform.runLater(() -> App.instance.hBoxBC.getChildren().addAll(new Label(b.toString())));
         Platform.runLater(() -> {
             JSONArray a = (JSONArray) JSONValue.parse(b.getData());
             for (int i = 0; i < a.size(); i++) {
+
                 JSONObject o = (JSONObject)a.get(i);
                 List<StringProperty> list = new ArrayList<>();
                 list.add(0,new SimpleStringProperty(o.get("bus").toString()));
@@ -125,7 +128,13 @@ public class Dashboard implements Runnable {
                 String type = (String)o.get("type");
                 long time = (long)o.get("time");
                 if (bus == 1) {
+
+
                     if (type.equals("arrival")) {
+                        App.instance.sc.setAnimated(false);
+                        App.instance.series.getData().clear();
+                        App.instance.series3.getData().clear();
+                        App.instance.sc.setAnimated(true);
                         String station = (String)o.get("station");
                         App.instance.labelBus1.setText("Bus 1 in station " + station + "(" + getStationIndex(station) + ")"
                                 + "\nat " + time);
@@ -139,13 +148,68 @@ public class Dashboard implements Runnable {
                                 App.instance.labelDelayBus1.setText("");
                         }
                         busLastStation.set(0, getStationIndex(station));
+                        if(station.equals("Bach Djerah")){
+                            App.instance.series.getData().add(App.instance.S1);
+                            App.instance.series3.getData().add(App.instance.S2);
+                            App.instance.series3.getData().add(App.instance.S3);
+                            App.instance.series3.getData().add(App.instance.S4);
+                            App.instance.series3.getData().add(App.instance.S5);
+                        }else if(station.equals("Bab Ezzouar")){
+                            App.instance.series.getData().add(App.instance.S2);
+                            App.instance.series3.getData().add(App.instance.S1);
+                            App.instance.series3.getData().add(App.instance.S3);
+                            App.instance.series3.getData().add(App.instance.S4);
+                            App.instance.series3.getData().add(App.instance.S5);
+                        }else if(station.equals("Harrach")){
+                            App.instance.series.getData().add(App.instance.S3);
+                            App.instance.series3.getData().add(App.instance.S1);
+                            App.instance.series3.getData().add(App.instance.S2);
+                            App.instance.series3.getData().add(App.instance.S4);
+                            App.instance.series3.getData().add(App.instance.S5);
+                        }else if(station.equals("Dar El Beida")){
+                            App.instance.series.getData().add(App.instance.S4);
+                            App.instance.series3.getData().add(App.instance.S1);
+                            App.instance.series3.getData().add(App.instance.S2);
+                            App.instance.series3.getData().add(App.instance.S3);
+                            App.instance.series3.getData().add(App.instance.S5);
+                        }else if(station.equals("Hammedi")){
+                            App.instance.series.getData().add(App.instance.S5);
+                            App.instance.series3.getData().add(App.instance.S1);
+                            App.instance.series3.getData().add(App.instance.S2);
+                            App.instance.series3.getData().add(App.instance.S3);
+                            App.instance.series3.getData().add(App.instance.S4);
+                        }
                     } else if (type.equals("depart")) {
+                        App.instance.sc.setAnimated(false);
+                        App.instance.series.getData().clear();
+                        App.instance.series3.getData().clear();
+                        App.instance.sc.setAnimated(true);
+
+                        App.instance.series3.getData().add(App.instance.S1);
+                        App.instance.series3.getData().add(App.instance.S2);
+                        App.instance.series3.getData().add(App.instance.S3);
+                        App.instance.series3.getData().add(App.instance.S4);
+                        App.instance.series3.getData().add(App.instance.S5);
+
+
                         String station = (String)o.get("station");
                         App.instance.labelBus1.setText("Bus 1 departed from station " + station + "(" + getStationIndex(station) + ")"
                                 + "\nto station " + nextStation(station).getName()
                                 + "\nat " + time);
                         busLastDepart.set(0, (int)time);
                     } else if (type.equals("position_update")) {
+                        App.instance.sc.setAnimated(false);
+                        App.instance.series.getData().clear();
+                        App.instance.series3.getData().clear();
+                        App.instance.sc.setAnimated(true);
+
+                        App.instance.series3.getData().add(App.instance.S1);
+                        App.instance.series3.getData().add(App.instance.S2);
+                        App.instance.series3.getData().add(App.instance.S3);
+                        App.instance.series3.getData().add(App.instance.S4);
+                        App.instance.series3.getData().add(App.instance.S5);
+
+
                         String position = (String)o.get("position");
                         App.instance.labelPosBus1.setText(position);
                     }
@@ -200,6 +264,7 @@ public class Dashboard implements Runnable {
                         App.instance.labelPosBus3.setText(position);
                     }
                 }
+
             }
         });
     }

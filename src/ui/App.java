@@ -363,6 +363,121 @@ public class App extends Application {
         sc_3.getData().add(series3_3); //station
         sc_3.getData().add(series_3);  //bus
 
+        NumberAxis xAxisL = new NumberAxis(0, 12, 1);
+        NumberAxis yAxisL = new NumberAxis(0, 10, 1);
+        final LineChart<Number,Number> linchart = new LineChart<>(xAxisL,yAxisL);
+        linchart.setOpacity(0.3);
+        linchart.setAxisSortingPolicy(LineChart.SortingPolicy.NONE);
+        linchart.setLegendVisible(false);
+
+
+        XYChart.Series serieL1 = new XYChart.Series();
+        serieL1.getData().add(new XYChart.Data(2,2));
+        serieL1.getData().add(new XYChart.Data(6,2));
+        serieL1.getData().add(new XYChart.Data(6,4));
+        serieL1.getData().add(new XYChart.Data(9,4));
+        serieL1.getData().add(new XYChart.Data(9,5));
+        serieL1.getData().add(new XYChart.Data(11,5));
+        serieL1.getData().add(new XYChart.Data(11,9));
+
+        XYChart.Series serieL2 = new XYChart.Series();
+        serieL2.getData().add(new XYChart.Data(2,2));
+        serieL2.getData().add(new XYChart.Data(2,3));
+        serieL2.getData().add(new XYChart.Data(4,3));
+        serieL2.getData().add(new XYChart.Data(4,8));
+        serieL2.getData().add(new XYChart.Data(7,8));
+        serieL2.getData().add(new XYChart.Data(7,9));
+        serieL2.getData().add(new XYChart.Data(11,9));
+
+        linchart.setAnimated(false);
+        linchart.setCreateSymbols(false);
+        linchart.getData().addAll(serieL1, serieL2);
+
+        NumberAxis xAxisL22 = new NumberAxis(0, 12, 1);
+        NumberAxis yAxisL22 = new NumberAxis(0, 10, 1);
+        final LineChart<Number,Number> linchart2 = new LineChart<>(xAxisL22,new NumberAxis(0, 10, 1));
+        linchart2.setOpacity(0.3);
+        linchart2.setAxisSortingPolicy(LineChart.SortingPolicy.NONE);
+        linchart2.setLegendVisible(false);
+
+
+        XYChart.Series serieL12 = new XYChart.Series();
+        serieL12.getData().add(new XYChart.Data(2,2));
+        serieL12.getData().add(new XYChart.Data(6,2));
+        serieL12.getData().add(new XYChart.Data(6,4));
+        serieL12.getData().add(new XYChart.Data(9,4));
+        serieL12.getData().add(new XYChart.Data(9,5));
+        serieL12.getData().add(new XYChart.Data(11,5));
+        serieL12.getData().add(new XYChart.Data(11,9));
+
+        XYChart.Series serieL22 = new XYChart.Series();
+        serieL22.getData().add(new XYChart.Data(2,2));
+        serieL22.getData().add(new XYChart.Data(2,3));
+        serieL22.getData().add(new XYChart.Data(4,3));
+        serieL22.getData().add(new XYChart.Data(4,8));
+        serieL22.getData().add(new XYChart.Data(7,8));
+        serieL22.getData().add(new XYChart.Data(7,9));
+        serieL22.getData().add(new XYChart.Data(11,9));
+
+        linchart2.setAnimated(false);
+        linchart2.setCreateSymbols(false);
+        linchart2.getData().addAll(serieL12, serieL22);
+
+        NumberAxis xAxisL23 = new NumberAxis(0, 12, 1);
+        NumberAxis yAxisL23 = new NumberAxis(0, 10, 1);
+        final LineChart<Number,Number> linchart3 = new LineChart<>(xAxisL23,yAxisL23);
+        linchart3.setOpacity(0.3);
+        linchart3.setAxisSortingPolicy(LineChart.SortingPolicy.NONE);
+        linchart3.setLegendVisible(false);
+
+
+        XYChart.Series serieL13 = new XYChart.Series();
+        serieL13.getData().add(new XYChart.Data(2,2));
+        serieL13.getData().add(new XYChart.Data(6,2));
+        serieL13.getData().add(new XYChart.Data(6,4));
+        serieL13.getData().add(new XYChart.Data(9,4));
+        serieL13.getData().add(new XYChart.Data(9,5));
+        serieL13.getData().add(new XYChart.Data(11,5));
+        serieL13.getData().add(new XYChart.Data(11,9));
+
+        XYChart.Series serieL23 = new XYChart.Series();
+        serieL23.getData().add(new XYChart.Data(2,2));
+        serieL23.getData().add(new XYChart.Data(2,3));
+        serieL23.getData().add(new XYChart.Data(4,3));
+        serieL23.getData().add(new XYChart.Data(4,8));
+        serieL23.getData().add(new XYChart.Data(7,8));
+        serieL23.getData().add(new XYChart.Data(7,9));
+        serieL23.getData().add(new XYChart.Data(11,9));
+
+        linchart3.setAnimated(false);
+        linchart3.setCreateSymbols(false);
+        linchart3.getData().addAll(serieL13, serieL23);
+
+        StackPane pane=new StackPane();
+        pane.getChildren().add(linchart);
+        pane.getChildren().add(sc);
+        pane.setPrefSize(400, 250);
+        pane.setMinSize(400, 200);
+        pane.setMaxSize(400, 200);
+        pane.setAlignment(Pos.TOP_LEFT);
+
+        StackPane pane2=new StackPane();
+        pane2.getChildren().add(linchart2);
+        pane2.getChildren().add(sc_2);
+        pane2.setPrefSize(400, 250);
+        pane2.setMinSize(400, 200);
+        pane2.setMaxSize(400, 200);
+        pane2.setAlignment(Pos.TOP_LEFT);
+
+        StackPane pane3=new StackPane();
+        pane3.getChildren().add(linchart3);
+        pane3.getChildren().add(sc_3);
+        pane3.setPrefSize(400, 250);
+        pane3.setMinSize(400, 200);
+        pane3.setMaxSize(400, 200);
+        pane3.setAlignment(Pos.TOP_LEFT);
+
+
         Label lbus1= new Label("Bus 1");
         lbus1.setFont(new Font("Segoe UI Semibold", 20));
         lbus1.setTextFill(Color.web("#000000"));
@@ -406,7 +521,7 @@ public class App extends Application {
         v3.setStyle("-fx-background-color: rgba(255,255,255,0.2); -fx-background-radius: 10;");
 
 
-        HBox hboxBus = new HBox(sc);
+        HBox hboxBus = new HBox(pane);
         hboxBus.setAlignment(Pos.TOP_LEFT);
         hboxBus.setSpacing(10);
         hboxBus.setMinWidth(400);
@@ -415,7 +530,7 @@ public class App extends Application {
         hboxBus.setMaxHeight(210);
         hboxBus.setStyle("-fx-background-color: rgba(255,255,255,0.2); -fx-background-radius: 10;");
 
-        HBox hboxBus2 = new HBox(sc_2);
+        HBox hboxBus2 = new HBox(pane2);
         hboxBus2.setAlignment(Pos.TOP_LEFT);
         hboxBus2.setSpacing(10);
         hboxBus2.setMinWidth(400);
@@ -424,7 +539,7 @@ public class App extends Application {
         hboxBus2.setMaxHeight(210);
         hboxBus2.setStyle("-fx-background-color: rgba(255,255,255,0.2); -fx-background-radius: 10;");
 
-        HBox hboxBus3 = new HBox(sc_3);
+        HBox hboxBus3 = new HBox(pane3);
         hboxBus3.setAlignment(Pos.TOP_LEFT);
         hboxBus3.setSpacing(10);
         hboxBus3.setMinWidth(400);

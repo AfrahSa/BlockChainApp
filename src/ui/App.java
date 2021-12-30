@@ -34,6 +34,7 @@ import actor.Dashboard;
 import org.json.simple.JSONObject;
 
 public class App extends Application {
+    public VBox layout;
     public VBox vBoxBC;
     public VBox vboxBlocs;
     public ScrollPane scrollPane;
@@ -47,10 +48,19 @@ public class App extends Application {
     public Label labelPosBus1;
     public Label labelPosBus2;
     public Label labelPosBus3;
+    public Label Bus1Auth;
+    public Label Bus2Auth;
+    public Label Bus3Auth;
+    public Label StationsBabAuth;
+    public Label StationsBachAuth;
+    public Label StationsDarAuth;
+    public Label StationsHarrachAuth;
+    public Label StationsHammediAuth;
     public HBox hbox1;
     public HBox hBoxBuses;
     public HBox hBoxDelayBuses;
     public HBox hBoxPosBuses;
+    public Button buttonAuth;
 
     public TableView<List<StringProperty>> table;
     public TableColumn<List<StringProperty>, String> BusCol;
@@ -160,34 +170,34 @@ public class App extends Application {
 
         table = new TableView<List<StringProperty>>();
         //table.setPrefSize( 300, 700 );
-        table.setPrefHeight(620);
+        table.setPrefHeight(610);
 
         BusCol = new TableColumn("Bus");
-        BusCol.setPrefWidth(50);
+        BusCol.setPrefWidth(40);
         BusCol.setCellValueFactory(data -> data.getValue().get(0));
 
         StationCol = new TableColumn("Station");
-        StationCol.setPrefWidth(100);
+        StationCol.setPrefWidth(90);
         StationCol.setCellValueFactory(data -> data.getValue().get(1));
 
         TimeCol = new TableColumn("Time");
-        TimeCol.setPrefWidth(50);
+        TimeCol.setPrefWidth(40);
         TimeCol.setCellValueFactory(data -> data.getValue().get(2));
 
         TypeCol = new TableColumn("Event Type");
-        TypeCol.setPrefWidth(100);
+        TypeCol.setPrefWidth(95);
         TypeCol.setCellValueFactory(data -> data.getValue().get(3));
 
         Position = new TableColumn("Position");
-        Position.setPrefWidth(80);
+        Position.setPrefWidth(70);
         Position.setCellValueFactory(data -> data.getValue().get(4));
 
         HashCol = new TableColumn("Hash");
-        HashCol.setPrefWidth(80);
+        HashCol.setPrefWidth(70);
         HashCol.setCellValueFactory(data -> data.getValue().get(5));
 
         PrHashCol = new TableColumn("Previous Hash");
-        PrHashCol.setPrefWidth(110);
+        PrHashCol.setPrefWidth(100);
         PrHashCol.setCellValueFactory(data -> data.getValue().get(6));
 
         BlockCol = new TableColumn("N° Bloc");
@@ -524,8 +534,8 @@ public class App extends Application {
         HBox hboxBus = new HBox(pane);
         hboxBus.setAlignment(Pos.TOP_LEFT);
         hboxBus.setSpacing(10);
-        hboxBus.setMinWidth(400);
-        hboxBus.setMaxWidth(430);
+        hboxBus.setMinWidth(500);
+        hboxBus.setMaxWidth(520);
         hboxBus.setMinHeight(210);
         hboxBus.setMaxHeight(210);
         hboxBus.setStyle("-fx-background-color: rgba(255,255,255,0.2); -fx-background-radius: 10;");
@@ -533,8 +543,8 @@ public class App extends Application {
         HBox hboxBus2 = new HBox(pane2);
         hboxBus2.setAlignment(Pos.TOP_LEFT);
         hboxBus2.setSpacing(10);
-        hboxBus2.setMinWidth(400);
-        hboxBus2.setMaxWidth(430);
+        hboxBus2.setMinWidth(500);
+        hboxBus2.setMaxWidth(520);
         hboxBus2.setMinHeight(210);
         hboxBus2.setMaxHeight(210);
         hboxBus2.setStyle("-fx-background-color: rgba(255,255,255,0.2); -fx-background-radius: 10;");
@@ -542,8 +552,8 @@ public class App extends Application {
         HBox hboxBus3 = new HBox(pane3);
         hboxBus3.setAlignment(Pos.TOP_LEFT);
         hboxBus3.setSpacing(10);
-        hboxBus3.setMinWidth(400);
-        hboxBus3.setMaxWidth(430);
+        hboxBus3.setMinWidth(500);
+        hboxBus3.setMaxWidth(520);
         hboxBus3.setMinHeight(210);
         hboxBus3.setMaxHeight(210);
         hboxBus3.setStyle("-fx-background-color: rgba(255,255,255,0.2); -fx-background-radius: 10;");
@@ -572,8 +582,31 @@ public class App extends Application {
         scroller.setFitToWidth(true);
 
 
-        Scene scene = new Scene(root,1350,700);
-        scene.getStylesheets().add(getClass().getResource("style.css").toExternalForm());
+        layout = new VBox();
+        layout.setAlignment(Pos.CENTER);
+
+        Scene scene = new Scene(layout, 300, 300);
+        Scene scene2 = new Scene(root,1350,700);
+        scene2.getStylesheets().add(getClass().getResource("style.css").toExternalForm());
+
+        Label busStat= new Label("Bus Authentication state:");
+        Bus1Auth = new Label("Bus 1 : not connected");
+        Bus2Auth = new Label("Bus 2 : not connected");
+        Bus3Auth = new Label("Bus 3 : not connected");
+
+        Label stationStat= new Label("Stations Authentication state:");
+        StationsBachAuth = new Label("Stations Bach Djerah : not connected");
+        StationsBabAuth= new Label("Stations Bab ezzouar : not connected");
+        StationsDarAuth = new Label("Stations Dar el beida : not connected");
+        StationsHammediAuth = new Label("Stations Hammedi : not connected");
+        StationsHarrachAuth = new Label("Stations Harrach : not connected");
+        buttonAuth = new Button("OK");
+        buttonAuth.setVisible(false);
+        buttonAuth.setOnAction(e -> stage.setScene(scene2));
+        layout.getChildren().addAll(busStat,Bus1Auth,Bus2Auth,Bus3Auth,stationStat,StationsBachAuth,StationsBabAuth,StationsDarAuth,StationsHarrachAuth,StationsHammediAuth, buttonAuth);
+
+
+
         stage.setScene(scene);
         stage.setTitle("Test window");
         stage.show();

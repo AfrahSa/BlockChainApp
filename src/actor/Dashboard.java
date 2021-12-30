@@ -1,11 +1,18 @@
 package actor;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.security.*;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.security.spec.X509EncodedKeySpec;
+import java.util.*;
+
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Vector;
+
 import blockchain.Ledger;
 import blockchain.Block;
 import event.Event;
@@ -26,8 +33,14 @@ import javafx.application.Platform;
 import javafx.scene.control.Label;
 import ui.App;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+
 public class Dashboard implements Runnable {
     private boolean exit;
+    private boolean launched;
 
     private Vector<Station> stations;
     private Vector<Bus> buses;
@@ -36,9 +49,17 @@ public class Dashboard implements Runnable {
     private Vector<Long> durations;
     private Vector<Integer> busLastStation;
     private Vector<Integer> busLastDepart;
+    private PrivateKey privateKey;
+    private PublicKey publicKey;
+
+    private Vector<byte[]> BusSignatures;
+    private HashMap <String,byte[]> StationsSignatures;
+    private Vector<Boolean> CheckBusSignatures;
+    private HashMap <String,Boolean> CheckStationsSignatures;
+
     public ObservableList<List<StringProperty>> data = FXCollections.observableArrayList();
 
-    public Dashboard(Vector<Station> stations, Vector<Bus> buses, Vector<Long> durations) {
+    public Dashboard(Vector<Station> stations, Vector<Bus> buses, Vector<Long> durations) throws NoSuchAlgorithmException {
         this.stations = stations;
         this.buses = buses;
         this.transactions = new Vector<JSONObject>();
@@ -52,10 +73,80 @@ public class Dashboard implements Runnable {
         this.busLastDepart.add(-1);
         this.busLastDepart.add(-1);
         this.busLastDepart.add(-1);
+        KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA");
+        keyGen.initialize(1024);
+        KeyPair pair = keyGen.generateKeyPair();
+        this.privateKey = pair.getPrivate();
+        this.publicKey = pair.getPublic();
+        this.BusSignatures = new Vector<byte[]>();
+        this.StationsSignatures =new HashMap<String,byte[]>();
+        this.CheckBusSignatures =new Vector<Boolean>();
+        this.CheckBusSignatures.add(false);
+        this.CheckBusSignatures.add(false);
+        this.CheckBusSignatures.add(false);
+        this.CheckStationsSignatures = new HashMap<String,Boolean>();
+        this.CheckStationsSignatures.put("Bach Djerah",false);
+        this.CheckStationsSignatures.put("Bab Ezzouar",false);
+        this.CheckStationsSignatures.put("Harrach",false);
+        this.CheckStationsSignatures.put("Hammedi",false);
+        this.CheckStationsSignatures.put("Dar El Beida",false);
     }
 
     @Override
     public void run() {
+        Signature sign = null;
+        try {
+           sign = Signature.getInstance("SHA256withDSA");
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        while (!launched){
+            try {
+                this.wait();
+                Signature finalSign = sign;
+                this.StationsSignatures.forEach((key, value)->{
+                    if(value != null && value.length>0){
+                        for(Station s: stations){
+                            if(s.getName().equals(key)){
+                                try {
+                                    this.CheckStationsSignatures.put(s.getName(),verifyDigitalSignature(value,s.getPublicKey()));
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                    }
+                });
+
+                for(int i=0; i<this.BusSignatures.size(); i++){
+                    if(this.BusSignatures.get(i) != null && this.BusSignatures.get(i).length >0){
+                        this.CheckBusSignatures.set(i, verifyDigitalSignature(this.BusSignatures.get(i),buses.get(i).getPublicKey()));
+                    }
+                }
+
+                boolean b = false; int j=0;
+                final int[] k = {0};
+                for(int i = 0; i < this.CheckBusSignatures.size(); i++){
+                    if(this.CheckBusSignatures.get(i))
+                        j++;
+                }
+                this.CheckStationsSignatures.forEach((key, value)->{
+                    if(value) {
+                        k[0]++;
+                    }
+                });
+                if(k[0] ==5 && j==3){
+                    launched=true;
+                }
+
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }
+
         synchronized (this) {
             while(!exit) {
                 try {
@@ -77,8 +168,6 @@ public class Dashboard implements Runnable {
                         System.out.println("Erreur: impossible de créer le fichier '"
                                 + FilePath + "'");
                     }
-
-                    //System.out.println("[ Dashboard             ] :\n" + ledger);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -101,10 +190,42 @@ public class Dashboard implements Runnable {
 
     public synchronized void updateUI() {
 
+
         Block b = ledger.getLastBlock();
-        //ObservableList<JSONObject> data = FXCollections.observableArrayList();
-        //Platform.runLater(() -> App.instance.hBoxBC.getChildren().addAll(new Label(b.toString())));
         Platform.runLater(() -> {
+            for(int i=0; i < this.CheckBusSignatures.size(); i++){
+                if(this.CheckBusSignatures.get(i)){
+                    if(i==0){
+                        App.instance.Bus1Auth.setText("Bus 1: is connected");
+                    }else if(i==1){
+                        App.instance.Bus2Auth.setText("Bus 2: is connected");
+                    }else if(i==2){
+                        App.instance.Bus3Auth.setText("Bus 3: is connected");
+                    }
+                }
+            }
+            this.CheckStationsSignatures.forEach((key, value)->{
+                if(value) {
+                    if(key.equals("Bach Djerah")){
+                        App.instance.StationsBachAuth.setText("Station Bach Djerah : is connected");
+                    }
+                    if(key.equals("Dar El Beida")){
+                        App.instance.StationsDarAuth.setText("Station Dar El Beida : is connected");
+                    }
+                    if(key.equals("Bab Ezzouar")){
+                        App.instance.StationsBachAuth.setText("Station Bab Ezzouar : is connected");
+                    }
+                    if(key.equals("Harrach")){
+                        App.instance.StationsHarrachAuth.setText("Station Harrach : is connected");
+                    }
+                    if(key.equals("Hammedi")){
+                        App.instance.StationsHammediAuth.setText("Station Hammedi : is connected");
+                    }
+                }
+            });
+            if (launched)
+                App.instance.buttonAuth.setVisible(true);
+
             JSONArray a = (JSONArray) JSONValue.parse(b.getData());
             for (int i = 0; i < a.size(); i++) {
 
@@ -585,5 +706,71 @@ public class Dashboard implements Runnable {
     private long calculateDelay(long lastDepart, long arrivalTime, int station){
         long exprectedArrivalTime = lastDepart + durations.get(station);
         return (arrivalTime / 1000) - (exprectedArrivalTime / 1000);
+    }
+
+    public PrivateKey getPrivateKey() {
+        return privateKey;
+    }
+
+    public PublicKey getPublicKey() {
+        return publicKey;
+    }
+
+    public void writeToFile(String path, byte[] key) throws IOException {
+        File f = new File(path);
+        f.getParentFile().mkdirs();
+
+        FileOutputStream fos = new FileOutputStream(f);
+        fos.write(key);
+        fos.flush();
+        fos.close();
+    }
+
+    public static PublicKey getPublicKey(String base64PublicKey){
+        PublicKey publicKey = null;
+        try{
+            X509EncodedKeySpec keySpec = new X509EncodedKeySpec(Base64.getDecoder().decode(base64PublicKey.getBytes()));
+            KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+            publicKey = keyFactory.generatePublic(keySpec);
+            return publicKey;
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (InvalidKeySpecException e) {
+            e.printStackTrace();
+        }
+        return publicKey;
+    }
+
+    public static PrivateKey getPrivateKey(String base64PrivateKey){
+        PrivateKey privateKey = null;
+        PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(Base64.getDecoder().decode(base64PrivateKey.getBytes()));
+        KeyFactory keyFactory = null;
+        try {
+            keyFactory = KeyFactory.getInstance("RSA");
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        try {
+            privateKey = keyFactory.generatePrivate(keySpec);
+        } catch (InvalidKeySpecException e) {
+            e.printStackTrace();
+        }
+        return privateKey;
+    }
+
+    public Vector<byte[]> getBusSignatures() {
+        return BusSignatures;
+    }
+
+    public HashMap <String,byte[]> getStationsSignatures() {
+        return StationsSignatures;
+    }
+
+    public static boolean verifyDigitalSignature(byte[] signatureToVerify, PublicKey key) throws Exception
+    {
+        Signature sig = Signature.getInstance("SHA256withDSA");
+        sig.initVerify(key);
+        sig.update("Signature".getBytes());
+        return sig.verify(signatureToVerify);
     }
 }

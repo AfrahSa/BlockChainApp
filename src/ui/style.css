@@ -1,6 +1,7 @@
 .table-view {
     -fx-background-color: transparent;
     -fx-font-family: "Segoe UI Semibold";
+    -fx-font-size:11px;
 
 }
 .table-view .column-header-background .filler {
@@ -71,18 +72,21 @@
 .default-color2.chart-symbol{
     -fx-stroke: #000000;
     -fx-shape: "M441.884,109.647A32.029,32.029,0,0,0,415.669,96H48a32.036,32.036,0,0,0-32,32V376H57.082a67.982,67.982,0,0,0,133.836,0H313.082a67.982,67.982,0,0,0,133.836,0H496V194.521a23.886,23.886,0,0,0-4.338-13.763ZM180,128H324v96H180ZM48,128H148v96H48Zm76,272a36,36,0,1,1,36-36A36.04,36.04,0,0,1,124,400Zm256,0a36,36,0,1,1,36-36A36.04,36.04,0,0,1,380,400Zm84-56H444.994a68,68,0,0,0-129.988,0H188.994a68,68,0,0,0-129.988,0H48V256H464Zm0-120H356V128h59.669L464,197.043Z";
+   // -fx-shape:"M61 18.5c-.6-1.7-1.3-3-3-3h-5v19h10v-6zm-41-3h12v13H20zm16 0h14v13H36zm-20 0H4a3 3 0 0 0-3 3v10h15zm-9 29a8 8 0 0 1 16 0h16a8 8 0 0 1 11-7.4v-5.6H1V43a1.5 1.5 0 0 0 1.5 1.5H7zm46-5.3a8 8 0 0 1 2 5.3h6.5A1.5 1.5 0 0 0 63 43v-4.5H53z";
     -fx-background-radius: 7px ;
     -fx-background-color: #000000;
     -fx-padding: 10px ;
 }
 .default-color1.chart-symbol{
     -fx-background-radius: 7px ;
-    -fx-padding: 7px ;
+    -fx-shape:"M32 2a20 20 0 0 0-20 20c0 18 20 40 20 40s20-22 20-40A20 20 0 0 0 32 2zm0 28a8 8 0 1 1 8-8 8 8 0 0 1-8 8z";
+    -fx-padding: 8px ;
+     -fx-background-radius: 7px ;
     -fx-background-color: #86340A;
 }
 .chart-symbol{
     -fx-background-radius: 7px ;
-    -fx-padding: 2px ;
+    -fx-padding: 1.5px ;
     -fx-background-color: #EFE3D0;
 }
 .gradient-background{
@@ -131,25 +135,6 @@
 .scroll-pane .corner{}
 
 .scroll-pane{}
-.default-color0.chart - series - line {
-      -fx - stroke: transparent;
-   }
-   .default-color1.chart - series - line {
-      -fx - stroke: red;
-   }
 
-   .default-color0.chart - line - symbol {
-      -fx - background - color: white, green;
-   }
-   .default-color1.chart - line - symbol {
-      -fx - background - color: transparent, transparent;
-   }
-
-   .default-color0.chart - legend - item - symbol {
-      -fx - background - color: green;
-   }
-   .default-color1.chart - legend - item - symbol {
-      -fx - background - color: red;
-   }
 
 

@@ -1,5 +1,6 @@
 package actor;
 
+import java.security.*;
 import java.util.Vector;
 import java.util.Random;
 import event.Event;
@@ -10,6 +11,20 @@ import java.lang.Math;
 import actor.Manager;
 import ui.App;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import java.io.IOException;
+import java.security.*;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.security.spec.X509EncodedKeySpec;
+import java.util.Base64;
+
+import static actor.Dashboard.decrypt;
+import static actor.Dashboard.getPublicKey;
+
 public class Bus implements Runnable {
     private int number;
     private boolean exit;
@@ -19,17 +34,59 @@ public class Bus implements Runnable {
     private int start;
     private Dashboard dashboard;
 
+    private PrivateKey privateKey;
+    private PublicKey publicKey;
 
-    public Bus(int number, Vector<Station> stations, int start,Vector<Itinerary>I) {
+
+    public Bus(int number, Vector<Station> stations, int start,Vector<Itinerary>I) throws NoSuchAlgorithmException {
         this.number = number;
         this.exit = false;
         this.stations = stations;
         this.start = start;
         this.itineraries=I;
+        KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA");
+        keyGen.initialize(1024);
+        KeyPair pair = keyGen.generateKeyPair();
+        this.privateKey = pair.getPrivate();
+        this.publicKey = pair.getPublic();
     }
 
     @Override
     public void run() {
+        //Creating a Signature object
+        Signature sign = null;
+        try {
+            sign = Signature.getInstance("SHA256withDSA");
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+
+        //Initializing the signature
+        try {
+            sign.initSign(this.privateKey);
+        } catch (InvalidKeyException e) {
+            e.printStackTrace();
+        }
+        byte[] bytes = "Signature".getBytes();
+
+        //Adding data to the signature
+        try {
+            sign.update(bytes);
+        } catch (SignatureException e) {
+            e.printStackTrace();
+        }
+
+        byte[] signature = new byte[0];
+        //Calculating the signature
+        try {
+             signature = sign.sign();
+        } catch (SignatureException e) {
+            e.printStackTrace();
+        }
+
+        //send the signature to the dashboard
+        dashboard.getBusSignatures().add(this.number,signature);
+
         synchronized (this) {
             int i = start;
             while (!exit) {
@@ -92,5 +149,9 @@ public class Bus implements Runnable {
 
     public void setDashboard(Dashboard dashboard) {
         this.dashboard = dashboard;
+    }
+
+    public PublicKey getPublicKey() {
+        return publicKey;
     }
 }

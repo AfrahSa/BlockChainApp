@@ -596,8 +596,8 @@ public class App extends Application {
 
         Label stationStat= new Label("Stations Authentication state:");
         StationsBachAuth = new Label("Stations Bach Djerah : not connected");
-        StationsBabAuth= new Label("Stations Bab ezzouar : not connected");
-        StationsDarAuth = new Label("Stations Dar el beida : not connected");
+        StationsBabAuth= new Label("Stations Bab Ezzouar : not connected");
+        StationsDarAuth = new Label("Stations Dar El Beida : not connected");
         StationsHammediAuth = new Label("Stations Hammedi : not connected");
         StationsHarrachAuth = new Label("Stations Harrach : not connected");
         buttonAuth = new Button("OK");

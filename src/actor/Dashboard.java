@@ -52,10 +52,10 @@ public class Dashboard implements Runnable {
     private PrivateKey privateKey;
     private PublicKey publicKey;
 
-    private Vector<byte[]> BusSignatures;
-    private HashMap <String,byte[]> StationsSignatures;
-    private Vector<Boolean> CheckBusSignatures;
-    private HashMap <String,Boolean> CheckStationsSignatures;
+    private HashMap<Integer, byte[]> BusesSignatures;
+    private HashMap <String, byte[]> StationsSignatures;
+    private HashMap<Integer, Boolean> CheckBusesSignatures;
+    private HashMap <String, Boolean> CheckStationsSignatures;
 
     public ObservableList<List<StringProperty>> data = FXCollections.observableArrayList();
 
@@ -78,12 +78,12 @@ public class Dashboard implements Runnable {
         KeyPair pair = keyGen.generateKeyPair();
         this.privateKey = pair.getPrivate();
         this.publicKey = pair.getPublic();
-        this.BusSignatures = new Vector<byte[]>();
-        this.StationsSignatures =new HashMap<String,byte[]>();
-        this.CheckBusSignatures =new Vector<Boolean>();
-        this.CheckBusSignatures.add(false);
-        this.CheckBusSignatures.add(false);
-        this.CheckBusSignatures.add(false);
+        this.BusesSignatures = new HashMap<Integer, byte[]>();
+        this.StationsSignatures =new HashMap<String, byte[]>();
+        this.CheckBusesSignatures =new HashMap<Integer, Boolean>();
+        this.CheckBusesSignatures.put(1, false);
+        this.CheckBusesSignatures.put(2, false);
+        this.CheckBusesSignatures.put(3, false);
         this.CheckStationsSignatures = new HashMap<String,Boolean>();
         this.CheckStationsSignatures.put("Bach Djerah",false);
         this.CheckStationsSignatures.put("Bab Ezzouar",false);
@@ -94,60 +94,86 @@ public class Dashboard implements Runnable {
 
     @Override
     public void run() {
-        Signature sign = null;
-        try {
-           sign = Signature.getInstance("SHA256withDSA");
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
-        while (!launched){
+        synchronized (this) {
+            Signature sign = null;
             try {
-                this.wait();
-                Signature finalSign = sign;
-                this.StationsSignatures.forEach((key, value)->{
-                    if(value != null && value.length>0){
-                        for(Station s: stations){
-                            if(s.getName().equals(key)){
-                                try {
-                                    this.CheckStationsSignatures.put(s.getName(),verifyDigitalSignature(value,s.getPublicKey()));
-                                } catch (Exception e) {
-                                    e.printStackTrace();
+                sign = Signature.getInstance("SHA256withRSA");
+            } catch (NoSuchAlgorithmException e) {
+                e.printStackTrace();
+            }
+            while (!launched){
+                try {
+                    this.wait();
+                    Signature finalSign = sign;
+
+                    this.StationsSignatures.forEach((key, value)->{
+                        if(value != null && value.length > 0){
+                            for(Station s : stations) {
+                                if (s.getName().equals(key)) {
+                                    try {
+                                        this.CheckStationsSignatures.put(s.getName(), verifyDigitalSignature(value, s.getPublicKey()));
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
                                 }
                             }
                         }
-                    }
-                });
+                    });
 
-                for(int i=0; i<this.BusSignatures.size(); i++){
-                    if(this.BusSignatures.get(i) != null && this.BusSignatures.get(i).length >0){
-                        this.CheckBusSignatures.set(i, verifyDigitalSignature(this.BusSignatures.get(i),buses.get(i).getPublicKey()));
+                    this.BusesSignatures.forEach((key, value)->{
+                        if(value != null && value.length > 0){
+                            for(Bus b : buses) {
+                                if (b.getNumber() == key.intValue()) {
+                                    try {
+                                        this.CheckBusesSignatures.put(b.getNumber(), verifyDigitalSignature(value, b.getPublicKey()));
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                        }
+                    });
+
+                    boolean b = false;
+                    int j = 0;
+                    int k = 0;
+                    for(Map.Entry<Integer, Boolean> e : CheckBusesSignatures.entrySet()){
+                        if(e.getValue())
+                            j++;
+                    }
+                    for (Map.Entry<String, Boolean> e : CheckStationsSignatures.entrySet()) {
+                        if (e.getValue())
+                            k++;
+                    }
+                    /*this.CheckStationsSignatures.forEach((key, value)->{
+                        if(value) {
+                            k++;
+                        }
+                    });*/
+                    if(k == 5 && j == 3){
+                        launched = true;
+                    }
+
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            try {
+                for (Station s : stations) {
+                    synchronized (s) {
+                        s.notify();
                     }
                 }
-
-                boolean b = false; int j=0;
-                final int[] k = {0};
-                for(int i = 0; i < this.CheckBusSignatures.size(); i++){
-                    if(this.CheckBusSignatures.get(i))
-                        j++;
-                }
-                this.CheckStationsSignatures.forEach((key, value)->{
-                    if(value) {
-                        k[0]++;
+                for (Bus b : buses) {
+                    synchronized (b) {
+                        b.notify();
                     }
-                });
-                if(k[0] ==5 && j==3){
-                    launched=true;
                 }
-
-            } catch (InterruptedException e) {
-                e.printStackTrace();
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
-        }
-
-        synchronized (this) {
             while(!exit) {
                 try {
                     this.wait();
@@ -193,17 +219,17 @@ public class Dashboard implements Runnable {
 
         Block b = ledger.getLastBlock();
         Platform.runLater(() -> {
-            for(int i=0; i < this.CheckBusSignatures.size(); i++){
-                if(this.CheckBusSignatures.get(i)){
-                    if(i==0){
+            this.CheckBusesSignatures.forEach((key, value)->{
+                if(value) {
+                    if(key.intValue() == 1){
                         App.instance.Bus1Auth.setText("Bus 1: is connected");
-                    }else if(i==1){
+                    }else if(key.intValue() == 2){
                         App.instance.Bus2Auth.setText("Bus 2: is connected");
-                    }else if(i==2){
+                    }else if(key.intValue() == 3){
                         App.instance.Bus3Auth.setText("Bus 3: is connected");
                     }
                 }
-            }
+            });
             this.CheckStationsSignatures.forEach((key, value)->{
                 if(value) {
                     if(key.equals("Bach Djerah")){
@@ -213,7 +239,7 @@ public class Dashboard implements Runnable {
                         App.instance.StationsDarAuth.setText("Station Dar El Beida : is connected");
                     }
                     if(key.equals("Bab Ezzouar")){
-                        App.instance.StationsBachAuth.setText("Station Bab Ezzouar : is connected");
+                        App.instance.StationsBabAuth.setText("Station Bab Ezzouar : is connected");
                     }
                     if(key.equals("Harrach")){
                         App.instance.StationsHarrachAuth.setText("Station Harrach : is connected");
@@ -758,8 +784,8 @@ public class Dashboard implements Runnable {
         return privateKey;
     }
 
-    public Vector<byte[]> getBusSignatures() {
-        return BusSignatures;
+    public HashMap<Integer, byte[]> getBusesSignatures() {
+        return BusesSignatures;
     }
 
     public HashMap <String,byte[]> getStationsSignatures() {
@@ -768,7 +794,7 @@ public class Dashboard implements Runnable {
 
     public static boolean verifyDigitalSignature(byte[] signatureToVerify, PublicKey key) throws Exception
     {
-        Signature sig = Signature.getInstance("SHA256withDSA");
+        Signature sig = Signature.getInstance("SHA256withRSA");
         sig.initVerify(key);
         sig.update("Signature".getBytes());
         return sig.verify(signatureToVerify);

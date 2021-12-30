@@ -36,41 +36,47 @@ public class Station implements Runnable {
 
     @Override 
     public void run() {
-        //Creating a Signature object
-        Signature sign = null;
-        try {
-            sign = Signature.getInstance("SHA256withDSA");
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
-
-        //Initializing the signature
-        try {
-            sign.initSign(this.privateKey);
-        } catch (InvalidKeyException e) {
-            e.printStackTrace();
-        }
-        byte[] bytes = "Signature".getBytes();
-
-        //Adding data to the signature
-        try {
-            sign.update(bytes);
-        } catch (SignatureException e) {
-            e.printStackTrace();
-        }
-
-        byte[] signature = new byte[0];
-        //Calculating the signature
-        try {
-            signature = sign.sign();
-        } catch (SignatureException e) {
-            e.printStackTrace();
-        }
-
-        //send the signature to the dashboard
-        dashboard.getStationsSignatures().put(this.name,signature);
-
         synchronized (this) {
+            //Creating a Signature object
+            Signature sign = null;
+            try {
+                sign = Signature.getInstance("SHA256withRSA");
+            } catch (NoSuchAlgorithmException e) {
+                e.printStackTrace();
+            }
+
+            //Initializing the signature
+            try {
+                sign.initSign(this.privateKey);
+            } catch (InvalidKeyException e) {
+                e.printStackTrace();
+            }
+            byte[] bytes = "Signature".getBytes();
+
+            //Adding data to the signature
+            try {
+                sign.update(bytes);
+            } catch (SignatureException e) {
+                e.printStackTrace();
+            }
+
+            byte[] signature = new byte[0];
+            //Calculating the signature
+            try {
+                signature = sign.sign();
+            } catch (SignatureException e) {
+                e.printStackTrace();
+            }
+            try {
+                synchronized (dashboard) {
+                    //send the signature to the dashboard
+                    dashboard.getStationsSignatures().put(this.name, signature);
+                    dashboard.notify();
+                }
+                this.wait();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             while (!exit) {
                 try {
                     this.wait();

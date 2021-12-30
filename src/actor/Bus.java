@@ -44,7 +44,7 @@ public class Bus implements Runnable {
         this.stations = stations;
         this.start = start;
         this.itineraries=I;
-        KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA");
+        KeyPairGenerator keyGen = KeyPairGenerator.getInstance("DSA");
         keyGen.initialize(1024);
         KeyPair pair = keyGen.generateKeyPair();
         this.privateKey = pair.getPrivate();
@@ -57,7 +57,7 @@ public class Bus implements Runnable {
             //Creating a Signature object
             Signature sign = null;
             try {
-                sign = Signature.getInstance("SHA256withRSA");
+                sign = Signature.getInstance("SHA256withDSA");
             } catch (NoSuchAlgorithmException e) {
                 e.printStackTrace();
             }

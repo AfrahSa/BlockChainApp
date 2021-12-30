@@ -73,7 +73,7 @@ public class Dashboard implements Runnable {
         this.busLastDepart.add(-1);
         this.busLastDepart.add(-1);
         this.busLastDepart.add(-1);
-        KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA");
+        KeyPairGenerator keyGen = KeyPairGenerator.getInstance("DSA");
         keyGen.initialize(1024);
         KeyPair pair = keyGen.generateKeyPair();
         this.privateKey = pair.getPrivate();
@@ -139,11 +139,24 @@ public class Dashboard implements Runnable {
                     int k = 0;
                     for(Map.Entry<Integer, Boolean> e : CheckBusesSignatures.entrySet()){
                         if(e.getValue())
+                        {
+                            try {
+                                Thread.sleep(1000);
+                            } catch (InterruptedException en) {
+                                en.printStackTrace();
+                            }
                             j++;
+                        }
                     }
                     for (Map.Entry<String, Boolean> e : CheckStationsSignatures.entrySet()) {
-                        if (e.getValue())
+                        if (e.getValue()) {
+                            try {
+                                Thread.sleep(1000);
+                            } catch (InterruptedException en) {
+                                en.printStackTrace();
+                            }
                             k++;
+                        }
                     }
                     /*this.CheckStationsSignatures.forEach((key, value)->{
                         if(value) {
@@ -221,31 +234,41 @@ public class Dashboard implements Runnable {
         Platform.runLater(() -> {
             this.CheckBusesSignatures.forEach((key, value)->{
                 if(value) {
+
                     if(key.intValue() == 1){
                         App.instance.Bus1Auth.setText("Bus 1: is connected");
+                        App.instance.Bus1Auth.setGraphic(App.instance.view_c1);
                     }else if(key.intValue() == 2){
                         App.instance.Bus2Auth.setText("Bus 2: is connected");
+                        App.instance.Bus2Auth.setGraphic(App.instance.view_c2);
                     }else if(key.intValue() == 3){
                         App.instance.Bus3Auth.setText("Bus 3: is connected");
+                        App.instance.Bus3Auth.setGraphic(App.instance.view_c3);
                     }
                 }
             });
             this.CheckStationsSignatures.forEach((key, value)->{
                 if(value) {
+
                     if(key.equals("Bach Djerah")){
                         App.instance.StationsBachAuth.setText("Station Bach Djerah : is connected");
+                        App.instance.StationsBachAuth.setGraphic(App.instance.view_c4);
                     }
                     if(key.equals("Dar El Beida")){
                         App.instance.StationsDarAuth.setText("Station Dar El Beida : is connected");
+                        App.instance.StationsDarAuth.setGraphic(App.instance.view_c6);
                     }
                     if(key.equals("Bab Ezzouar")){
                         App.instance.StationsBabAuth.setText("Station Bab Ezzouar : is connected");
+                        App.instance.StationsBabAuth.setGraphic(App.instance.view_c5);
                     }
                     if(key.equals("Harrach")){
                         App.instance.StationsHarrachAuth.setText("Station Harrach : is connected");
+                        App.instance.StationsHarrachAuth.setGraphic(App.instance.view_c8);
                     }
                     if(key.equals("Hammedi")){
                         App.instance.StationsHammediAuth.setText("Station Hammedi : is connected");
+                        App.instance.StationsHammediAuth.setGraphic(App.instance.view_c7);
                     }
                 }
             });
@@ -794,7 +817,7 @@ public class Dashboard implements Runnable {
 
     public static boolean verifyDigitalSignature(byte[] signatureToVerify, PublicKey key) throws Exception
     {
-        Signature sig = Signature.getInstance("SHA256withRSA");
+        Signature sig = Signature.getInstance("SHA256withDSA");
         sig.initVerify(key);
         sig.update("Signature".getBytes());
         return sig.verify(signatureToVerify);

@@ -62,6 +62,15 @@ public class App extends Application {
     public HBox hBoxPosBuses;
     public Button buttonAuth;
 
+    public ImageView view_c1 ;
+    public ImageView view_c2;
+    public ImageView view_c3;
+    public ImageView view_c4;
+    public ImageView view_c5;
+    public ImageView view_c6;
+    public ImageView view_c7;
+    public ImageView view_c8;
+
     public TableView<List<StringProperty>> table;
     public TableColumn<List<StringProperty>, String> BusCol;
     public TableColumn<List<StringProperty>, String> StationCol;
@@ -585,26 +594,125 @@ public class App extends Application {
         layout = new VBox();
         layout.setAlignment(Pos.CENTER);
 
-        Scene scene = new Scene(layout, 300, 300);
-        Scene scene2 = new Scene(root,1350,700);
+        Scene scene = new Scene(layout, 1350, 700);
+        Scene scene2 = new Scene(root,1000,600);
         scene2.getStylesheets().add(getClass().getResource("style.css").toExternalForm());
+        scene.getStylesheets().add(getClass().getResource("style.css").toExternalForm());
+
+        Label l = new Label("Authentication State");
+        l.setFont(new Font("Segoe UI Semibold", 24));
 
         Label busStat= new Label("Bus Authentication state:");
+        busStat.setFont(new Font("Segoe UI Semibold", 20));
+        busStat.setPadding(new Insets(-10,10,25,0));
         Bus1Auth = new Label("Bus 1 : not connected");
         Bus2Auth = new Label("Bus 2 : not connected");
         Bus3Auth = new Label("Bus 3 : not connected");
 
+        Image image1 = new Image("ui/images/cancel.png");
+        Image image2 = new Image("ui/images/checked.png");
+        ImageView view_1 = new ImageView(image1);
+        view_1.setPreserveRatio(true);
+        ImageView view_2 = new ImageView(image1);
+        view_2.setPreserveRatio(true);
+        ImageView view_3 = new ImageView(image1);
+        view_3.setPreserveRatio(true);
+        ImageView view_4 = new ImageView(image1);
+        view_4.setPreserveRatio(true);
+        ImageView view_5 = new ImageView(image1);
+        view_5.setPreserveRatio(true);
+        ImageView view_6 = new ImageView(image1);
+        view_6.setPreserveRatio(true);
+        ImageView view_7 = new ImageView(image1);
+        view_7.setPreserveRatio(true);
+        ImageView view_8 = new ImageView(image1);
+        view_8.setPreserveRatio(true);
+
+        view_c1 = new ImageView(image2);
+        view_c1.setPreserveRatio(true);
+        view_c2 = new ImageView(image2);
+        view_c2.setPreserveRatio(true);
+        view_c3 = new ImageView(image2);
+        view_c3.setPreserveRatio(true);
+        view_c4 = new ImageView(image2);
+        view_c4.setPreserveRatio(true);
+        view_c5 = new ImageView(image2);
+        view_c5.setPreserveRatio(true);
+        view_c6 = new ImageView(image2);
+        view_c6.setPreserveRatio(true);
+        view_c7 = new ImageView(image2);
+        view_c7.setPreserveRatio(true);
+        view_c8 = new ImageView(image2);
+        view_c8.setPreserveRatio(true);
+
+        Bus1Auth.setGraphic(view_1);
+        Bus2Auth.setGraphic(view_2);
+        Bus3Auth.setGraphic(view_3);
+
+        Bus1Auth.setContentDisplay(ContentDisplay.RIGHT);
+        Bus2Auth.setContentDisplay(ContentDisplay.RIGHT);
+        Bus3Auth.setContentDisplay(ContentDisplay.RIGHT);
+
         Label stationStat= new Label("Stations Authentication state:");
+        stationStat.setFont(new Font("Segoe UI Semibold", 20));
+        stationStat.setPadding(new Insets(-20,10,25,0));
         StationsBachAuth = new Label("Stations Bach Djerah : not connected");
         StationsBabAuth= new Label("Stations Bab Ezzouar : not connected");
         StationsDarAuth = new Label("Stations Dar El Beida : not connected");
         StationsHammediAuth = new Label("Stations Hammedi : not connected");
         StationsHarrachAuth = new Label("Stations Harrach : not connected");
-        buttonAuth = new Button("OK");
-        buttonAuth.setVisible(false);
-        buttonAuth.setOnAction(e -> stage.setScene(scene2));
-        layout.getChildren().addAll(busStat,Bus1Auth,Bus2Auth,Bus3Auth,stationStat,StationsBachAuth,StationsBabAuth,StationsDarAuth,StationsHarrachAuth,StationsHammediAuth, buttonAuth);
 
+        StationsBachAuth.setGraphic(view_4);
+        StationsBabAuth.setGraphic(view_5);
+        StationsDarAuth.setGraphic(view_6);
+        StationsHammediAuth.setGraphic(view_7);
+        StationsHarrachAuth.setGraphic(view_8);
+
+        StationsBachAuth.setContentDisplay(ContentDisplay.RIGHT);
+        StationsBabAuth.setContentDisplay(ContentDisplay.RIGHT);
+        StationsDarAuth.setContentDisplay(ContentDisplay.RIGHT);
+        StationsHammediAuth.setContentDisplay(ContentDisplay.RIGHT);
+        StationsHarrachAuth.setContentDisplay(ContentDisplay.RIGHT);
+
+        buttonAuth = new Button("GO TO THE DASHBOARD");
+        buttonAuth.setVisible(false);
+        Image image3 = new Image("ui/images/next.png");
+        ImageView viewb = new ImageView(image3);
+        viewb.setPreserveRatio(true);
+        buttonAuth.setGraphic(viewb);
+        buttonAuth.setId("button");
+        buttonAuth.setContentDisplay(ContentDisplay.RIGHT);
+        buttonAuth.setOnAction(e -> stage.setScene(scene2));
+
+        VBox vb1 = new VBox(busStat,Bus1Auth,Bus2Auth,Bus3Auth);
+        vb1.setAlignment(Pos.TOP_LEFT);
+        vb1.setSpacing(10);
+        vb1.setMinWidth(400);
+        vb1.setMaxWidth(500);
+        vb1.setMinHeight(310);
+        vb1.setMaxHeight(310);
+        vb1.setPadding(new Insets(50));
+        vb1.setStyle("-fx-background-color: rgba(255,255,255,0.2); -fx-background-radius: 10;");
+
+        VBox vb2 = new VBox(stationStat,StationsBachAuth,StationsBabAuth,StationsDarAuth,StationsHarrachAuth,StationsHammediAuth);
+        vb2.setAlignment(Pos.TOP_LEFT);
+        vb2.setSpacing(10);
+        vb2.setMinWidth(400);
+        vb2.setMaxWidth(500);
+        vb2.setMinHeight(310);
+        vb2.setMaxHeight(310);
+        vb2.setPadding(new Insets(50));
+        vb2.setStyle("-fx-background-color: rgba(255,255,255,0.2); -fx-background-radius: 10;");
+
+        HBox hb1 = new HBox(vb1,vb2);
+        hb1.setSpacing(100);
+        hb1.setMinWidth(600);
+        hb1.setMaxWidth(720);
+        hb1.setMinHeight(410);
+        hb1.setMaxHeight(410);
+        hb1.setAlignment(Pos.CENTER);
+        layout.getChildren().addAll(l,hb1,buttonAuth);
+        layout.setStyle("-fx-background-color: linear-gradient(from 30% 30% to 100% 100%, #5584AC, #FFE6BC);");
 
 
         stage.setScene(scene);

@@ -27,7 +27,7 @@ public class Station implements Runnable {
         this.name = name;
         this.exit = false;
         this.events = new LinkedList<Event>();
-        KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA");
+        KeyPairGenerator keyGen = KeyPairGenerator.getInstance("DSA");
         keyGen.initialize(1024);
         KeyPair pair = keyGen.generateKeyPair();
         this.privateKey = pair.getPrivate();
@@ -40,7 +40,7 @@ public class Station implements Runnable {
             //Creating a Signature object
             Signature sign = null;
             try {
-                sign = Signature.getInstance("SHA256withRSA");
+                sign = Signature.getInstance("SHA256withDSA");
             } catch (NoSuchAlgorithmException e) {
                 e.printStackTrace();
             }

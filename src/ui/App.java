@@ -9,6 +9,7 @@ import javafx.beans.property.StringProperty;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
@@ -190,7 +191,7 @@ public class App extends Application {
         StationCol.setCellValueFactory(data -> data.getValue().get(1));
 
         TimeCol = new TableColumn("Time");
-        TimeCol.setPrefWidth(40);
+        TimeCol.setPrefWidth(55);
         TimeCol.setCellValueFactory(data -> data.getValue().get(2));
 
         TypeCol = new TableColumn("Event Type");
@@ -217,7 +218,7 @@ public class App extends Application {
 
         vboxBlocs = new VBox(hb,table);
         vboxBlocs.setAlignment(Pos.TOP_CENTER);
-        vBoxBC.setSpacing(10);
+        vboxBlocs.setSpacing(5);
 
 
 
@@ -242,15 +243,15 @@ public class App extends Application {
         hBoxBuses.setSpacing(100);
 
         labelDelayBus1 = new Label("");
-        labelDelayBus1.setFont(new Font("Segoe UI Light", 14));
+        labelDelayBus1.setFont(new Font("Segoe UI Semibold", 14));
         labelDelayBus1.setTextFill(Color.web("#F90716"));
 
         labelDelayBus2 = new Label("");
-        labelDelayBus2.setFont(new Font("Segoe UI Light", 14));
+        labelDelayBus2.setFont(new Font("Segoe UI Semibold", 14));
         labelDelayBus2.setTextFill(Color.web("#F90716"));
 
         labelDelayBus3 = new Label("");
-        labelDelayBus3.setFont(new Font("Segoe UI Light", 14));
+        labelDelayBus3.setFont(new Font("Segoe UI Semibold", 14));
         labelDelayBus3.setTextFill(Color.web("#F90716"));
 
         hBoxDelayBuses = new HBox(labelDelayBus1, labelDelayBus2, labelDelayBus3);
@@ -262,7 +263,7 @@ public class App extends Application {
         labelPosBus3 = new Label("PosBus3");
 
         label1 = new Label("Bus Stations Management");
-        label1.setFont(new Font("Segoe UI Light", 26));
+        label1.setFont(new Font("Segoe UI Semibold", 26));
         label1.setTextFill(Color.web("#000000"));
         Image img1 = new Image("ui/images/bus-stop-pointer (1).png");
         ImageView view1 = new ImageView(img1);
@@ -276,7 +277,7 @@ public class App extends Application {
         hbox1.setPadding(new Insets(7, 5, 7, 5));
         BorderPane root = new BorderPane();
         root.setTop(hbox1);
-        root.setMargin(hbox1, new Insets(5));
+        root.setMargin(hbox1, new Insets(5,5,2,5));
 
 
         final NumberAxis xAxis = new NumberAxis(0, 12, 1);
@@ -289,21 +290,21 @@ public class App extends Application {
         final NumberAxis yAxis3 = new NumberAxis(0, 10, 1);
 
         sc = new ScatterChart<>(xAxis,yAxis);
-        sc.setPrefSize(400, 250);
-        sc.setMinSize(400, 200);
-        sc.setMaxSize(400, 200);
+        sc.setPrefSize(420, 250);
+        sc.setMinSize(420, 200);
+        sc.setMaxSize(420, 200);
         sc.setLegendVisible(false);
 
         sc_2 = new ScatterChart<>(xAxis2,yAxis2);
-        sc_2.setPrefSize(400, 200);
-        sc_2.setMinSize(400, 200);
-        sc_2.setMaxSize(400, 200);
+        sc_2.setPrefSize(420, 200);
+        sc_2.setMinSize(420, 200);
+        sc_2.setMaxSize(420, 200);
         sc_2.setLegendVisible(false);
 
         sc_3 = new ScatterChart<>(xAxis3,yAxis3);
-        sc_3.setPrefSize(400, 200);
-        sc_3.setMinSize(400, 200);
-        sc_3.setMaxSize(400, 200);
+        sc_3.setPrefSize(420, 200);
+        sc_3.setMinSize(420, 200);
+        sc_3.setMaxSize(420, 200);
         sc_3.setLegendVisible(false);
 
         series = new XYChart.Series();
@@ -451,7 +452,7 @@ public class App extends Application {
 
 
         XYChart.Series serieL13 = new XYChart.Series();
-        serieL13.getData().add(new XYChart.Data(2,2));
+        serieL13.getData().add(new XYChart.Data(2,2,new Label("Bab")));
         serieL13.getData().add(new XYChart.Data(6,2));
         serieL13.getData().add(new XYChart.Data(6,4));
         serieL13.getData().add(new XYChart.Data(9,4));
@@ -475,25 +476,25 @@ public class App extends Application {
         StackPane pane=new StackPane();
         pane.getChildren().add(linchart);
         pane.getChildren().add(sc);
-        pane.setPrefSize(400, 250);
-        pane.setMinSize(400, 200);
-        pane.setMaxSize(400, 200);
+        pane.setPrefSize(420, 250);
+        pane.setMinSize(420, 200);
+        pane.setMaxSize(420, 200);
         pane.setAlignment(Pos.TOP_LEFT);
 
         StackPane pane2=new StackPane();
         pane2.getChildren().add(linchart2);
         pane2.getChildren().add(sc_2);
-        pane2.setPrefSize(400, 250);
-        pane2.setMinSize(400, 200);
-        pane2.setMaxSize(400, 200);
+        pane2.setPrefSize(420, 250);
+        pane2.setMinSize(420, 200);
+        pane2.setMaxSize(420, 200);
         pane2.setAlignment(Pos.TOP_LEFT);
 
         StackPane pane3=new StackPane();
         pane3.getChildren().add(linchart3);
         pane3.getChildren().add(sc_3);
-        pane3.setPrefSize(400, 250);
-        pane3.setMinSize(400, 200);
-        pane3.setMaxSize(400, 200);
+        pane3.setPrefSize(420, 250);
+        pane3.setMinSize(420, 200);
+        pane3.setMaxSize(420, 200);
         pane3.setAlignment(Pos.TOP_LEFT);
 
 
@@ -512,77 +513,109 @@ public class App extends Application {
         lbus3.setTextFill(Color.web("#000000"));
         lbus3.setPadding(new Insets(10));
 
+        Label lb2 = new Label("Bus");
+        lb2.setFont(new Font("Segoe UI Semibold", 20));
+        lb2.setTextFill(Color.web("#000000"));
+        Image img2 = new Image("ui/images/bus.png");
+        ImageView view2 = new ImageView(img2);
+        view2.setPreserveRatio(true);
+        lb2.setGraphic(view2);
+
+        HBox hb2 = new HBox(lb2);
+        hb2.setAlignment(Pos.CENTER);
+        hb2.setSpacing(100);
+        hb2.setStyle("-fx-background-color: rgba(255,255,255,0.2); -fx-background-radius: 10;");
+
         VBox v1 = new VBox(lbus1,labelBus1,labelDelayBus1);
         v1.setAlignment(Pos.TOP_CENTER);
         v1.setSpacing(2);
-        v1.setMinWidth(300);
-        v1.setMaxWidth(300);
-        v1.setMinHeight(210);
-        v1.setMaxHeight(210);
+        v1.setMinWidth(340);
+        v1.setMaxWidth(340);
+        v1.setMinHeight(200);
+        v1.setMaxHeight(200);
         v1.setStyle("-fx-background-color: rgba(255,255,255,0.2); -fx-background-radius: 10;");
 
         VBox v2 = new VBox(lbus2,labelBus2,labelDelayBus2);
         v2.setAlignment(Pos.TOP_CENTER);
         v2.setSpacing(2);
-        v2.setMinWidth(300);
-        v2.setMaxWidth(300);
-        v2.setMinHeight(210);
-        v2.setMaxHeight(210);
+        v2.setMinWidth(340);
+        v2.setMaxWidth(340);
+        v2.setMinHeight(200);
+        v2.setMaxHeight(200);
         v2.setStyle("-fx-background-color: rgba(255,255,255,0.2); -fx-background-radius: 10;");
 
         VBox v3 = new VBox(lbus3,labelBus3,labelDelayBus3);
         v3.setAlignment(Pos.TOP_CENTER);
         v3.setSpacing(2);
-        v3.setMinWidth(300);
-        v3.setMaxWidth(300);
-        v3.setMinHeight(210);
-        v3.setMaxHeight(210);
+        v3.setMinWidth(340);
+        v3.setMaxWidth(340);
+        v3.setMinHeight(200);
+        v3.setMaxHeight(200);
         v3.setStyle("-fx-background-color: rgba(255,255,255,0.2); -fx-background-radius: 10;");
 
+
+        Label lb3 = new Label("Bus locations");
+        lb3.setFont(new Font("Segoe UI Semibold", 20));
+        lb3.setTextFill(Color.web("#000000"));
+        Image img3 = new Image("ui/images/Bus_it.png");
+        ImageView view3 = new ImageView(img3);
+        view3.setPreserveRatio(true);
+        lb3.setGraphic(view3);
+
+        HBox hb3 = new HBox(lb3);
+        hb3.setAlignment(Pos.CENTER);
+        hb3.setSpacing(100);
+        hb3.setStyle("-fx-background-color: rgba(255,255,255,0.2); -fx-background-radius: 10;");
+        hb3.setMaxWidth(440);
+        hb3.setMinWidth(400);
 
         HBox hboxBus = new HBox(pane);
         hboxBus.setAlignment(Pos.TOP_LEFT);
         hboxBus.setSpacing(10);
-        hboxBus.setMinWidth(500);
-        hboxBus.setMaxWidth(520);
-        hboxBus.setMinHeight(210);
-        hboxBus.setMaxHeight(210);
+        hboxBus.setMinWidth(400);
+        hboxBus.setMaxWidth(440);
+        hboxBus.setMinHeight(200);
+        hboxBus.setMaxHeight(200);
         hboxBus.setStyle("-fx-background-color: rgba(255,255,255,0.2); -fx-background-radius: 10;");
 
         HBox hboxBus2 = new HBox(pane2);
         hboxBus2.setAlignment(Pos.TOP_LEFT);
         hboxBus2.setSpacing(10);
-        hboxBus2.setMinWidth(500);
-        hboxBus2.setMaxWidth(520);
-        hboxBus2.setMinHeight(210);
-        hboxBus2.setMaxHeight(210);
+        hboxBus2.setMinWidth(400);
+        hboxBus2.setMaxWidth(440);
+        hboxBus2.setMinHeight(200);
+        hboxBus2.setMaxHeight(200);
         hboxBus2.setStyle("-fx-background-color: rgba(255,255,255,0.2); -fx-background-radius: 10;");
 
         HBox hboxBus3 = new HBox(pane3);
         hboxBus3.setAlignment(Pos.TOP_LEFT);
         hboxBus3.setSpacing(10);
-        hboxBus3.setMinWidth(500);
-        hboxBus3.setMaxWidth(520);
-        hboxBus3.setMinHeight(210);
-        hboxBus3.setMaxHeight(210);
+        hboxBus3.setMinWidth(400);
+        hboxBus3.setMaxWidth(440);
+        hboxBus3.setMinHeight(200);
+        hboxBus3.setMaxHeight(200);
         hboxBus3.setStyle("-fx-background-color: rgba(255,255,255,0.2); -fx-background-radius: 10;");
 
-        VBox Vcenter = new VBox(hboxBus,hboxBus2,hboxBus3);
+        VBox Vcenter = new VBox(hb3,hboxBus,hboxBus2,hboxBus3);
         Vcenter.setAlignment(Pos.TOP_LEFT);
         Vcenter.setSpacing(5);
+        Vcenter.setMinWidth(420);
+        Vcenter.setMaxWidth(440);
 
         hBoxPosBuses = new HBox(labelPosBus1, labelPosBus2, labelPosBus3);
         hBoxPosBuses.setAlignment(Pos.CENTER);
         hBoxPosBuses.setSpacing(100);
 
-        VBox vBoxGlobal = new VBox( v1,v2,v3);
+        VBox vBoxGlobal = new VBox(hb2, v1,v2,v3);
         vBoxGlobal.setAlignment(Pos.TOP_LEFT);
         vBoxGlobal.setSpacing(5);
+        vBoxGlobal.setMinWidth(340);
+        vBoxGlobal.setMaxWidth(340);
         root.setRight(vboxBlocs);
         root.setLeft(vBoxGlobal);
         root.setCenter(Vcenter);
         root.setPrefSize(400, 400);
-        root.setStyle("-fx-background-color: linear-gradient(from 30% 30% to 100% 100%, #35589A, #FFF1BD);");
+        root.setStyle("-fx-background-color: linear-gradient(from 30% 30% to 100% 100%, #5584AC, #FFF1BD);");
         root.setMargin(vBoxGlobal, new Insets(3));
         root.setMargin(Vcenter, new Insets(3));
         root.setMargin(vboxBlocs, new Insets(3));
@@ -605,9 +638,9 @@ public class App extends Application {
         Label busStat= new Label("Bus Authentication state:");
         busStat.setFont(new Font("Segoe UI Semibold", 20));
         busStat.setPadding(new Insets(-10,10,25,0));
-        Bus1Auth = new Label("Bus 1 : not connected");
-        Bus2Auth = new Label("Bus 2 : not connected");
-        Bus3Auth = new Label("Bus 3 : not connected");
+        Bus1Auth = new Label("Bus 1 : not connected ");
+        Bus2Auth = new Label("Bus 2 : not connected ");
+        Bus3Auth = new Label("Bus 3 : not connected ");
 
         Image image1 = new Image("ui/images/cancel.png");
         Image image2 = new Image("ui/images/checked.png");
@@ -656,11 +689,11 @@ public class App extends Application {
         Label stationStat= new Label("Stations Authentication state:");
         stationStat.setFont(new Font("Segoe UI Semibold", 20));
         stationStat.setPadding(new Insets(-20,10,25,0));
-        StationsBachAuth = new Label("Stations Bach Djerah : not connected");
-        StationsBabAuth= new Label("Stations Bab Ezzouar : not connected");
-        StationsDarAuth = new Label("Stations Dar El Beida : not connected");
-        StationsHammediAuth = new Label("Stations Hammedi : not connected");
-        StationsHarrachAuth = new Label("Stations Harrach : not connected");
+        StationsBachAuth = new Label("Stations Bach Djerah : not connected ");
+        StationsBabAuth= new Label("Stations Bab Ezzouar : not connected ");
+        StationsDarAuth = new Label("Stations Dar El Beida : not connected ");
+        StationsHammediAuth = new Label("Stations Hammedi : not connected     ");
+        StationsHarrachAuth = new Label("Stations Harrach : not connected        ");
 
         StationsBachAuth.setGraphic(view_4);
         StationsBabAuth.setGraphic(view_5);

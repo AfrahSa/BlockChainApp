@@ -140,11 +140,7 @@ public class Dashboard implements Runnable {
                     for(Map.Entry<Integer, Boolean> e : CheckBusesSignatures.entrySet()){
                         if(e.getValue())
                         {
-                            try {
-                                Thread.sleep(1000);
-                            } catch (InterruptedException en) {
-                                en.printStackTrace();
-                            }
+
                             j++;
                         }
                     }
@@ -236,13 +232,13 @@ public class Dashboard implements Runnable {
                 if(value) {
 
                     if(key.intValue() == 1){
-                        App.instance.Bus1Auth.setText("Bus 1: is connected");
+                        App.instance.Bus1Auth.setText("Bus 1: is connected ");
                         App.instance.Bus1Auth.setGraphic(App.instance.view_c1);
                     }else if(key.intValue() == 2){
-                        App.instance.Bus2Auth.setText("Bus 2: is connected");
+                        App.instance.Bus2Auth.setText("Bus 2: is connected ");
                         App.instance.Bus2Auth.setGraphic(App.instance.view_c2);
                     }else if(key.intValue() == 3){
-                        App.instance.Bus3Auth.setText("Bus 3: is connected");
+                        App.instance.Bus3Auth.setText("Bus 3: is connected ");
                         App.instance.Bus3Auth.setGraphic(App.instance.view_c3);
                     }
                 }
@@ -251,23 +247,23 @@ public class Dashboard implements Runnable {
                 if(value) {
 
                     if(key.equals("Bach Djerah")){
-                        App.instance.StationsBachAuth.setText("Station Bach Djerah : is connected");
+                        App.instance.StationsBachAuth.setText("Station Bach Djerah : is connected ");
                         App.instance.StationsBachAuth.setGraphic(App.instance.view_c4);
                     }
                     if(key.equals("Dar El Beida")){
-                        App.instance.StationsDarAuth.setText("Station Dar El Beida : is connected");
+                        App.instance.StationsDarAuth.setText("Station Dar El Beida : is connected ");
                         App.instance.StationsDarAuth.setGraphic(App.instance.view_c6);
                     }
                     if(key.equals("Bab Ezzouar")){
-                        App.instance.StationsBabAuth.setText("Station Bab Ezzouar : is connected");
+                        App.instance.StationsBabAuth.setText("Station Bab Ezzouar : is connected ");
                         App.instance.StationsBabAuth.setGraphic(App.instance.view_c5);
                     }
                     if(key.equals("Harrach")){
-                        App.instance.StationsHarrachAuth.setText("Station Harrach : is connected");
+                        App.instance.StationsHarrachAuth.setText("Station Harrach : is connected        ");
                         App.instance.StationsHarrachAuth.setGraphic(App.instance.view_c8);
                     }
                     if(key.equals("Hammedi")){
-                        App.instance.StationsHammediAuth.setText("Station Hammedi : is connected");
+                        App.instance.StationsHammediAuth.setText("Station Hammedi : is connected     ");
                         App.instance.StationsHammediAuth.setGraphic(App.instance.view_c7);
                     }
                 }
@@ -277,12 +273,14 @@ public class Dashboard implements Runnable {
 
             JSONArray a = (JSONArray) JSONValue.parse(b.getData());
             for (int i = 0; i < a.size(); i++) {
-
                 JSONObject o = (JSONObject)a.get(i);
+                long time = (long)o.get("time");
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTimeInMillis(time+Manager.startTime);
                 List<StringProperty> list = new ArrayList<>();
                 list.add(0,new SimpleStringProperty(o.get("bus").toString()));
                 list.add(1,new SimpleStringProperty((String)o.get("station")));
-                list.add(2,new SimpleStringProperty(o.get("time").toString()));
+                list.add(2,new SimpleStringProperty(calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE) + ":" + calendar.get(Calendar.SECOND)));
                 list.add(3,new SimpleStringProperty((String)o.get("type")));
                 if(o.get("position") == null)
                     list.add(4,new SimpleStringProperty(""));
@@ -303,7 +301,7 @@ public class Dashboard implements Runnable {
 
                 long bus = (long)o.get("bus");
                 String type = (String)o.get("type");
-                long time = (long)o.get("time");
+
                 if (bus == 1) {
                     App.instance.sc.setAnimated(false);
                     App.instance.series.getData().clear();
@@ -315,14 +313,14 @@ public class Dashboard implements Runnable {
 
                     if (type.equals("arrival")) {
                         String station = (String)o.get("station");
-                        App.instance.labelBus1.setText("Bus 1 in station " + station + "(" + getStationIndex(station) + ")"
-                                + "\nat " + time);
+                        App.instance.labelBus1.setText("Bus 1 in station " + station
+                                + "\nat " + calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE) + ":" + calendar.get(Calendar.SECOND));
                         System.out.println("[ Dashboard             ] : Bus 1 last " + busLastStation.get(0));
                         if (busLastStation.get(0) != -1) {
                             long delay = calculateDelay((long)busLastDepart.get(0), time, busLastStation.get(0));
                             System.out.println("[ Dashboard             ] : Bus 1 delay " + delay);
                             if (delay > 0)
-                                App.instance.labelDelayBus1.setText("Delay of " + delay);
+                                App.instance.labelDelayBus1.setText("Delay of " + delay + " seconds");
                             else
                                 App.instance.labelDelayBus1.setText("");
                         }
@@ -360,9 +358,9 @@ public class Dashboard implements Runnable {
                         }
                     } else if (type.equals("depart")) {
                         String station = (String)o.get("station");
-                        App.instance.labelBus1.setText("Bus 1 departed from station " + station + "(" + getStationIndex(station) + ")"
+                        App.instance.labelBus1.setText("Bus 1 departed from station " + station
                                 + "\nto station " + nextStation(station).getName()
-                                + "\nat " + time);
+                                + "\nat " + calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE) + ":" + calendar.get(Calendar.SECOND));
                         busLastDepart.set(0, (int)time);
                     } else if (type.equals("position_update")) {
                        String position = (String)o.get("position");
@@ -445,14 +443,14 @@ public class Dashboard implements Runnable {
                     App.instance.series3_2.getData().addAll(App.instance.S1_2,App.instance.S2_2,App.instance.S3_2,App.instance.S4_2,App.instance.S5_2);
                     if (type.equals("arrival")) {
                         String station = (String)o.get("station");
-                        App.instance.labelBus2.setText("Bus 2 in station " + station + "(" + getStationIndex(station) + ")"
-                                + "\nat " + time);
+                        App.instance.labelBus2.setText("Bus 2 in station " + station
+                                + "\nat " + calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE) + ":" + calendar.get(Calendar.SECOND));
                         System.out.println("[ Dashboard             ] : Bus 2 last " + busLastStation.get(1));
                         if (busLastStation.get(1) != -1) {
                             long delay = calculateDelay((long)busLastDepart.get(1), time, busLastStation.get(1));
                             System.out.println("[ Dashboard             ] : Bus 2 delay " + delay);
                             if (delay > 0)
-                                App.instance.labelDelayBus2.setText("Delay of " + delay);
+                                App.instance.labelDelayBus2.setText("Delay of " + delay + " seconds");
                             else
                                 App.instance.labelDelayBus2.setText("");
                         }
@@ -490,9 +488,9 @@ public class Dashboard implements Runnable {
                         }
                     } else if (type.equals("depart")) {
                         String station = (String)o.get("station");
-                        App.instance.labelBus2.setText("Bus 2 departed from station " + station + "(" + getStationIndex(station) + ")"
+                        App.instance.labelBus2.setText("Bus 2 departed from station " + station
                                 + "\nto station " + nextStation(station).getName()
-                                + "\nat " + time);
+                                + "\nat " + calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE) + ":" + calendar.get(Calendar.SECOND));
                         busLastDepart.set(1, (int)time);
                     } else if (type.equals("position_update")) {
                         String position = (String)o.get("position");
@@ -576,14 +574,14 @@ public class Dashboard implements Runnable {
                     App.instance.series3_3.getData().addAll(App.instance.S1_3,App.instance.S2_3,App.instance.S3_3,App.instance.S4_3,App.instance.S5_3);
                     if (type.equals("arrival")) {
                         String station = (String)o.get("station");
-                        App.instance.labelBus3.setText("Bus 3 in station " + station + "(" + getStationIndex(station) + ")"
-                                + "\nat " + time);
+                        App.instance.labelBus3.setText("Bus 3 in station " + station
+                                + "\nat " + calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE) + ":" + calendar.get(Calendar.SECOND));
                         System.out.println("[ Dashboard             ] : Bus 1 last " + busLastStation.get(2));
                         if (busLastStation.get(2) != -1) {
                             long delay = calculateDelay((long)busLastDepart.get(2), time, busLastStation.get(2));
                             System.out.println("[ Dashboard             ] : Bus 3 delay " + delay);
                             if (delay > 0)
-                                App.instance.labelDelayBus3.setText("Delay of " + delay);
+                                App.instance.labelDelayBus3.setText("Delay of " + delay + " seconds");
                             else
                                 App.instance.labelDelayBus3.setText("");
                         }
@@ -622,9 +620,9 @@ public class Dashboard implements Runnable {
                         }
                     } else if (type.equals("depart")) {
                         String station = (String)o.get("station");
-                        App.instance.labelBus3.setText("Bus 3 departed from station " + station + "(" + getStationIndex(station) + ")"
+                        App.instance.labelBus3.setText("Bus 3 departed from station " + station
                                 + "\nto station " + nextStation(station).getName()
-                                + "\nat " + time);
+                                + "\nat " + calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE) + ":" + calendar.get(Calendar.SECOND));
                         busLastDepart.set(2, (int)time);
                     } else if (type.equals("position_update")) {
                         String position = (String)o.get("position");

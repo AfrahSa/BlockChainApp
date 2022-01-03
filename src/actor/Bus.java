@@ -3,10 +3,9 @@ package actor;
 import java.security.*;
 import java.util.Vector;
 import java.util.Random;
-import event.Event;
-import event.ArrivalEvent;
-import event.DepartEvent;
-import event.PositionUpdateEvent;
+
+import event.*;
+
 import java.lang.Math;
 import actor.Manager;
 import ui.App;
